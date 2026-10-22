@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# Nothing behind a paywall or in a staging area to hide.
+Disallow: /404.html
+
+Sitemap: https://bishora.com/sitemap.xml

@@ -1,0 +1,3 @@
+# SPA fallback for hosts that support a "_redirects" style rule.
+# Every unknown path is served by the React Router app (e.g. /services).
+/*    /index.html   200

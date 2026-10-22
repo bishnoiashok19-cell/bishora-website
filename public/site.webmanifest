@@ -1,0 +1,18 @@
+{
+  "name": "Bishora — Digital Marketing Agency",
+  "short_name": "Bishora",
+  "description": "Helping local businesses get found, get leads and grow online through SEO, Google Business Profile optimisation, paid advertising, websites and social media marketing.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0d1523",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
