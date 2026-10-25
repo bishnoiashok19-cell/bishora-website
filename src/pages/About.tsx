@@ -1,4 +1,14 @@
-import { ArrowRight, Ban, Building2, MapPinned, Target } from 'lucide-react';
+import {
+  ArrowRight,
+  Ban,
+  Briefcase,
+  Building2,
+  Eye,
+  MapPinned,
+  Settings2,
+  Target,
+  Wrench,
+} from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { PageHero } from '../components/layout/PageHero';
 import { CTASection } from '../components/CTASection';
@@ -11,6 +21,32 @@ import { businessVerticals } from '../data/verticals';
 import { values, notDoing } from '../data/values';
 import { services, serviceHref } from '../data/services';
 import { useSeo, buildBreadcrumbJsonLd } from '../lib/seo';
+
+/** The four principles that shape how every engagement is run. */
+const approach = [
+  {
+    title: 'Clarity',
+    description: 'Clear scope, pricing and expectations.',
+    icon: Eye,
+  },
+  {
+    title: 'Practical Solutions',
+    description:
+      'Services focused on the actual requirements of the business.',
+    icon: Wrench,
+  },
+  {
+    title: 'Professional Execution',
+    description: 'Proper setup, implementation and optimisation.',
+    icon: Settings2,
+  },
+  {
+    title: 'Business First',
+    description:
+      'Understanding the business before recommending a digital solution.',
+    icon: Briefcase,
+  },
+] as const;
 
 export default function About() {
   useSeo({
@@ -114,6 +150,48 @@ export default function About() {
         </Container>
       </section>
 
+      {/* Our approach */}
+      <section
+        aria-labelledby="approach-heading"
+        className="bg-ink-50/60 py-20 sm:py-24 lg:py-28"
+      >
+        <Container>
+          <Reveal>
+            <SectionHeading
+              id="approach-heading"
+              eyebrow="Our approach"
+              title="A clear process, built around your business."
+              description="Four principles guide how we scope, build and improve every engagement."
+              align="center"
+            />
+          </Reveal>
+
+          <ul className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {approach.map((item, index) => {
+              const Icon = item.icon;
+
+              return (
+                <Reveal as="li" key={item.title} delay={index * 60}>
+                  <article className="h-full rounded-2xl border border-ink-100 bg-white p-6 shadow-soft transition-[transform,box-shadow,border-color] duration-300 hover:-translate-y-1 hover:border-brand-200 hover:shadow-lift">
+                    <IconTile tone="brand">
+                      <Icon aria-hidden="true" />
+                    </IconTile>
+
+                    <h3 className="mt-5 font-display text-lg font-bold text-ink-950">
+                      {item.title}
+                    </h3>
+
+                    <p className="mt-2.5 text-[0.95rem] leading-relaxed text-ink-600">
+                      {item.description}
+                    </p>
+                  </article>
+                </Reveal>
+              );
+            })}
+          </ul>
+        </Container>
+      </section>
+
       {/* Values */}
       <section
         aria-labelledby="values-heading"
@@ -163,6 +241,82 @@ export default function About() {
               );
             })}
           </ul>
+        </Container>
+      </section>
+
+      {/* Founder */}
+      <section
+        aria-labelledby="founder-heading"
+        className="bg-ink-50/60 py-20 sm:py-24 lg:py-28"
+      >
+        <Container>
+          <div className="grid gap-10 lg:grid-cols-12 lg:gap-16">
+            <div className="lg:col-span-5">
+              <Reveal>
+                <SectionHeading
+                  id="founder-heading"
+                  eyebrow="Meet the founder"
+                  title="Meet the Founder — Ashok"
+                  description="A short introduction to the person behind Bishora."
+                />
+              </Reveal>
+
+              <Reveal delay={100}>
+                <div className="mt-8 flex items-center gap-4">
+                  <span
+                    aria-hidden="true"
+                    className="inline-flex size-14 shrink-0 items-center justify-center rounded-2xl bg-brand-600 font-display text-xl font-bold text-white shadow-soft"
+                  >
+                    A
+                  </span>
+                  <div>
+                    <p className="font-display text-lg font-bold text-ink-950">
+                      Ashok
+                    </p>
+                    <p className="text-sm text-ink-600">Founder, Bishora</p>
+                  </div>
+                </div>
+              </Reveal>
+            </div>
+
+            <div className="lg:col-span-7">
+              <Reveal delay={120}>
+                <div className="rounded-2xl border border-ink-100 bg-white p-7 shadow-soft sm:p-8">
+                  <div className="space-y-5 text-[1.0625rem] leading-relaxed text-ink-600">
+                    <p>
+                      Bishora is founded by Ashok, a digital marketing
+                      professional with experience in SEO and digital
+                      advertising.
+                    </p>
+                    <p>
+                      He started his journey by learning digital marketing,
+                      followed by professional work in SEO. Along the way, he
+                      has worked across SEO, Google Ads, Facebook and Meta Ads,
+                      and other digital marketing activities.
+                    </p>
+                    <p>
+                      Today, he is building Bishora to provide practical digital
+                      services to businesses through his own agency.
+                    </p>
+                  </div>
+
+                  <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+                    <Button
+                      to="/services"
+                      iconRight={
+                        <ArrowRight className="size-5" aria-hidden="true" />
+                      }
+                    >
+                      See our services
+                    </Button>
+                    <Button to="/contact" variant="outline">
+                      Talk to us
+                    </Button>
+                  </div>
+                </div>
+              </Reveal>
+            </div>
+          </div>
         </Container>
       </section>
 
@@ -222,6 +376,60 @@ export default function About() {
                   );
                 })}
               </ul>
+            </div>
+          </div>
+        </Container>
+      </section>
+
+      {/* Why Bishora */}
+      <section
+        aria-labelledby="why-heading"
+        className="bg-white py-20 sm:py-24 lg:py-28"
+      >
+        <Container>
+          <div className="grid gap-10 lg:grid-cols-12 lg:gap-16">
+            <div className="lg:col-span-5">
+              <Reveal>
+                <SectionHeading
+                  id="why-heading"
+                  eyebrow="Why Bishora"
+                  title="One team for the services that usually arrive separately."
+                />
+              </Reveal>
+            </div>
+
+            <div className="lg:col-span-7">
+              <Reveal delay={120}>
+                <div className="rounded-2xl border border-brand-100 bg-brand-50/60 p-7 sm:p-9">
+                  <div className="space-y-5 text-[1.0625rem] leading-relaxed text-ink-700">
+                    <p>
+                      Businesses often need several digital services at the same
+                      time — from websites and Google visibility to advertising
+                      and customer communication. Bishora brings these services
+                      together with a practical, straightforward approach.
+                    </p>
+                    <p>
+                      The focus is on understanding what the business actually
+                      needs and implementing the right solution rather than
+                      adding unnecessary services.
+                    </p>
+                  </div>
+
+                  <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+                    <Button
+                      to="/services"
+                      iconRight={
+                        <ArrowRight className="size-5" aria-hidden="true" />
+                      }
+                    >
+                      Explore services
+                    </Button>
+                    <Button to="/pricing" variant="outline">
+                      See pricing
+                    </Button>
+                  </div>
+                </div>
+              </Reveal>
             </div>
           </div>
         </Container>
@@ -318,6 +526,37 @@ export default function About() {
                 <Building2 className="size-4 text-brand-600" aria-hidden="true" />
                 Small and local businesses
               </span>
+            </div>
+          </Reveal>
+        </Container>
+      </section>
+
+      {/* Our goal */}
+      <section
+        aria-labelledby="goal-heading"
+        className="bg-brand-50/50 py-16 sm:py-20"
+      >
+        <Container>
+          <Reveal>
+            <div className="mx-auto max-w-3xl rounded-2xl border border-brand-100 bg-white p-8 text-center shadow-soft sm:p-12">
+              <div className="flex justify-center">
+                <IconTile tone="brand" size="lg">
+                  <Target aria-hidden="true" />
+                </IconTile>
+              </div>
+
+              <h2
+                id="goal-heading"
+                className="mt-5 text-3xl leading-[1.12] font-bold text-ink-950 sm:text-4xl"
+              >
+                Our Goal
+              </h2>
+
+              <p className="mx-auto mt-5 max-w-2xl text-[1.0625rem] leading-relaxed text-ink-600">
+                Our goal is to help businesses build a professional digital
+                presence, reach the right audience and create better
+                opportunities through the internet.
+              </p>
             </div>
           </Reveal>
         </Container>
