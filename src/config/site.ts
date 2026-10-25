@@ -85,7 +85,7 @@ export const whatsappConfig = {
 export const socialConfig = {
   facebook: 'https://www.facebook.com/profile.php?id=61595577671366',
   instagram: 'https://www.instagram.com/bishora.in/',
-  linkedin: 'https://www.linkedin.com/company/14469663/',
+  linkedin: 'https://www.linkedin.com/company/144050953/',
 } as const;
 
 export type SocialKey = keyof typeof socialConfig;
