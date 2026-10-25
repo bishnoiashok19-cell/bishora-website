@@ -11,6 +11,7 @@ import {
   whatsappLink,
 } from '../../config/site';
 import { services } from '../../data/services';
+import { serviceHref } from '../../data/services';
 import { Button } from '../ui/Button';
 import { Container } from '../ui/Container';
 import { SocialIcon } from '../ui/SocialIcon';
@@ -28,7 +29,6 @@ const socialEntries: SocialEntry[] = [
   { key: 'facebook', label: 'Facebook', icon: 'facebook' },
   { key: 'instagram', label: 'Instagram', icon: 'instagram' },
   { key: 'linkedin', label: 'LinkedIn', icon: 'linkedin' },
-  { key: 'x', label: 'X', icon: 'x' },
 ];
 
 export function Footer() {
@@ -93,9 +93,6 @@ export function Footer() {
                   );
                 })}
               </div>
-              <p className="mt-3 text-xs text-ink-400">
-                Social profile links will be added here.
-              </p>
             </div>
           </div>
 
@@ -127,7 +124,7 @@ export function Footer() {
               {services.map((service) => (
                 <li key={service.slug}>
                   <Link
-                    to={`/services#${service.slug}`}
+                    to={serviceHref(service.slug)}
                     className="inline-block text-[0.95rem] text-ink-300 transition-colors hover:text-white"
                   >
                     {service.shortName}

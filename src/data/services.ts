@@ -642,3 +642,10 @@ export const services: Service[] = [
 
 /** Service names used to populate the "service interested in" dropdown. */
 export const serviceNames = services.map((service) => service.name);
+
+/**
+ * Canonical in-site destination for a service.
+ *
+ * Every service now has its own dedicated page at `/services/{slug}`.
+ */
+export const serviceHref = (slug: string): string => `/services/${slug}`;

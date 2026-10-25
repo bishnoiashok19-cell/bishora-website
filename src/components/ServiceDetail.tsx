@@ -1,4 +1,5 @@
 import { ArrowRight, Check } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import type { Service } from '../data/services';
 import { Button } from './ui/Button';
 import { Container } from './ui/Container';
@@ -8,6 +9,10 @@ import { cn } from '../lib/utils';
 export type ServiceDetailProps = {
   service: Service;
   index: number;
+  /** Optional link to a dedicated page for this service. */
+  moreHref?: string;
+  /** Label for the optional dedicated-page link. */
+  moreLabel?: string;
 };
 
 /**
@@ -16,7 +21,7 @@ export type ServiceDetailProps = {
  * The left column explains the service and what the client receives; the
  * right column breaks the service down into its individual components.
  */
-export function ServiceDetail({ service, index }: ServiceDetailProps) {
+export function ServiceDetail({ service, index, moreHref, moreLabel }: ServiceDetailProps) {
   const Icon = service.icon;
   const isEven = index % 2 === 0;
 
@@ -88,6 +93,18 @@ export function ServiceDetail({ service, index }: ServiceDetailProps) {
               Ask about {service.shortName}
             </Button>
           </div>
+
+          {moreHref ? (
+            <p className="mt-6">
+              <Link
+                to={moreHref}
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-brand-700 transition-colors hover:text-brand-800"
+              >
+                {moreLabel ?? 'Learn more'}
+                <ArrowRight className="size-4" aria-hidden="true" />
+              </Link>
+            </p>
+          ) : null}
         </div>
 
         {/* Components */}

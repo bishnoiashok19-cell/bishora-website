@@ -3,13 +3,13 @@ import type { ChangeEvent, FormEvent } from 'react';
 import {
   AlertCircle,
   Check,
-  ClipboardCheck,
+  Mail,
   MessageCircle,
   RotateCcw,
   Send,
 } from 'lucide-react';
 import { serviceNames } from '../data/services';
-import { hasWhatsapp, whatsappLink } from '../config/site';
+import { hasEmail, hasWhatsapp, mailtoLink, whatsappLink } from '../config/site';
 import { Button } from './ui/Button';
 import { cn } from '../lib/utils';
 
@@ -100,7 +100,6 @@ export function ContactForm({ initialService = '' }: ContactFormProps) {
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [submitted, setSubmitted] = useState(false);
-  const [copied, setCopied] = useState(false);
   const formRef = useRef<HTMLFormElement>(null);
   const successRef = useRef<HTMLDivElement>(null);
 
@@ -140,18 +139,6 @@ export function ContactForm({ initialService = '' }: ContactFormProps) {
     setValues(emptyValues);
     setErrors({});
     setSubmitted(false);
-    setCopied(false);
-  };
-
-  const copyMessage = async () => {
-    const text = buildMessage(values);
-    try {
-      await navigator.clipboard.writeText(text);
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 3000);
-    } catch {
-      setCopied(false);
-    }
   };
 
   if (submitted) {
@@ -168,13 +155,12 @@ export function ContactForm({ initialService = '' }: ContactFormProps) {
         </span>
 
         <h2 className="mt-5 font-display text-2xl font-bold text-ink-950">
-          Thanks{values.name.trim() ? `, ${values.name.trim().split(' ')[0]}` : ''} — your message is ready.
+          Thanks{values.name.trim() ? `, ${values.name.trim().split(' ')[0]}` : ''} — your enquiry is ready.
         </h2>
 
         <p className="mt-3 max-w-xl text-[0.95rem] leading-relaxed text-ink-700">
-          Your details have been checked and formatted. This website form is
-          not connected to a server yet, so nothing has been submitted behind
-          the scenes. Use one of the options below to reach the team directly.
+          Your details have been checked and formatted. Please choose an option
+          below to contact our team directly.
         </p>
 
         <dl className="mt-6 grid gap-x-8 gap-y-4 rounded-xl border border-ink-100 bg-white p-5 sm:grid-cols-2">
@@ -235,19 +221,15 @@ export function ContactForm({ initialService = '' }: ContactFormProps) {
             </Button>
           ) : null}
 
-          <Button
-            variant="outline"
-            onClick={copyMessage}
-            icon={
-              copied ? (
-                <Check className="size-5 text-emerald-600" aria-hidden="true" />
-              ) : (
-                <ClipboardCheck className="size-5" aria-hidden="true" />
-              )
-            }
-          >
-            {copied ? 'Copied to clipboard' : 'Copy message'}
-          </Button>
+          {hasEmail() ? (
+            <Button
+              href={mailtoLink('New enquiry for Bishora', buildMessage(values))}
+              variant="outline"
+              icon={<Mail className="size-5" aria-hidden="true" />}
+            >
+              Send on Email
+            </Button>
+          ) : null}
 
           <Button
             variant="ghost"
@@ -257,12 +239,6 @@ export function ContactForm({ initialService = '' }: ContactFormProps) {
             Write another message
           </Button>
         </div>
-
-        {copied ? (
-          <p className="mt-4 text-sm text-emerald-700" role="status">
-            Message copied. Paste it into WhatsApp, email or a message.
-          </p>
-        ) : null}
       </div>
     );
   }

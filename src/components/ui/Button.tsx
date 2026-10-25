@@ -40,7 +40,7 @@ export type ButtonProps = {
 };
 
 const baseClasses =
-  'inline-flex items-center justify-center gap-2 rounded-full font-semibold tracking-[-0.01em] transition-[background-color,color,border-color,box-shadow,transform] duration-200 whitespace-nowrap select-none disabled:pointer-events-none disabled:opacity-55 active:translate-y-px';
+  'inline-flex max-w-full items-center justify-center gap-2 rounded-full text-center font-semibold tracking-[-0.01em] transition-[background-color,color,border-color,box-shadow,transform] duration-200 whitespace-normal select-none sm:whitespace-nowrap disabled:pointer-events-none disabled:opacity-55 active:translate-y-px';
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary:
@@ -57,9 +57,11 @@ const variantClasses: Record<ButtonVariant, string> = {
 };
 
 const sizeClasses: Record<ButtonSize, string> = {
-  sm: 'h-9 px-4 text-sm',
-  md: 'h-11 px-5 text-[0.95rem]',
-  lg: 'h-13 px-7 text-base',
+  // min-h + vertical padding keeps the exact same height for single-line
+  // labels, while letting wrapped labels grow instead of clipping on mobile.
+  sm: 'min-h-9 px-4 py-1.5 text-sm',
+  md: 'min-h-11 px-5 py-2 text-[0.95rem]',
+  lg: 'min-h-13 px-7 py-2.5 text-base',
 };
 
 /**

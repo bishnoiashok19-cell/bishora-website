@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight, Check } from 'lucide-react';
 import type { Service } from '../data/services';
+import { serviceHref } from '../data/services';
 import { IconTile } from './ui/IconTile';
 import { cn } from '../lib/utils';
 
@@ -59,7 +60,7 @@ export function ServiceCard({
       </ul>
 
       <Link
-        to={`/services#${service.slug}`}
+        to={serviceHref(service.slug)}
         className="mt-6 inline-flex items-center gap-1.5 text-sm font-semibold text-brand-700 transition-colors hover:text-brand-800"
       >
         Learn more about {service.shortName.toLowerCase()}

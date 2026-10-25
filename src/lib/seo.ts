@@ -142,6 +142,29 @@ export function useSeo({
   ]);
 }
 
+/**
+ * Builds an `FAQPage` JSON-LD block for a page.
+ *
+ * Only use this where the same questions and answers are genuinely visible on
+ * the page — never to describe content that is not actually there.
+ */
+export function buildFaqJsonLd(
+  items: Array<{ question: string; answer: string }>,
+): Record<string, unknown> {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: items.map((item) => ({
+      '@type': 'Question',
+      name: item.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: item.answer,
+      },
+    })),
+  };
+}
+
 /** Builds a `BreadcrumbList` JSON-LD block for a page. */
 export function buildBreadcrumbJsonLd(
   items: Array<{ name: string; path: string }>,

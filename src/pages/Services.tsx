@@ -1,6 +1,7 @@
 import { ArrowRight, Check, Layers } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { PageHero } from '../components/layout/PageHero';
-import { ServiceDetail } from '../components/ServiceDetail';
+import { ServiceCard } from '../components/ServiceCard';
 import { CTASection } from '../components/CTASection';
 import { Accordion } from '../components/ui/Accordion';
 import { Button } from '../components/ui/Button';
@@ -8,6 +9,7 @@ import { Container } from '../components/ui/Container';
 import { Reveal } from '../components/ui/Reveal';
 import { SectionHeading } from '../components/ui/SectionHeading';
 import { services } from '../data/services';
+import { servicePath } from '../data/servicePages';
 import { servicesFaqs } from '../data/servicesFaq';
 import { useSeo, buildBreadcrumbJsonLd } from '../lib/seo';
 
@@ -67,7 +69,7 @@ export default function Services() {
 
       {/* Quick navigation */}
       <section
-        aria-label="Services on this page"
+        aria-label="All services"
         className="border-b border-ink-100 bg-white py-8"
       >
         <Container>
@@ -75,18 +77,18 @@ export default function Services() {
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:gap-6">
               <p className="flex shrink-0 items-center gap-2 text-xs font-semibold uppercase tracking-[0.16em] text-ink-500">
                 <Layers className="size-4 text-brand-600" aria-hidden="true" />
-                Jump to a service
+                Browse all services
               </p>
               <ul className="flex flex-wrap gap-2">
                 {services.map((service) => (
                   <li key={service.slug}>
-                    <a
-                      href={`#${service.slug}`}
+                    <Link
+                      to={servicePath(service.slug)}
                       className="inline-flex items-center gap-2 rounded-full border border-ink-200 bg-white px-4 py-2 text-sm font-medium text-ink-700 transition-colors hover:border-brand-300 hover:bg-brand-50 hover:text-brand-800"
                     >
                       <service.icon className="size-4" aria-hidden="true" />
                       {service.shortName}
-                    </a>
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -95,10 +97,30 @@ export default function Services() {
         </Container>
       </section>
 
-      {/* Detailed services */}
-      {services.map((service, index) => (
-        <ServiceDetail key={service.slug} service={service} index={index} />
-      ))}
+      {/* Service index: each card links to its own dedicated page */}
+      <section
+        aria-labelledby="services-index-heading"
+        className="bg-ink-50 py-20 sm:py-24"
+      >
+        <Container>
+          <Reveal>
+            <SectionHeading
+              id="services-index-heading"
+              eyebrow="What we do"
+              title="Twelve services. One practical plan for getting found and winning the enquiry."
+              description="Each service has its own dedicated page and its own sub-services. Choose the one that matches what you want to improve first."
+            />
+          </Reveal>
+
+          <ul className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {services.map((service, index) => (
+              <Reveal as="li" key={service.slug} delay={index * 50}>
+                <ServiceCard service={service} />
+              </Reveal>
+            ))}
+          </ul>
+        </Container>
+      </section>
 
       {/* Included in every engagement */}
       <section

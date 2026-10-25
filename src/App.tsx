@@ -1,13 +1,20 @@
-import { lazy, Suspense } from 'react';
+import { Fragment, lazy, Suspense } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { Navbar } from './components/layout/Navbar';
 import { Footer } from './components/layout/Footer';
 import { ScrollToTop } from './components/layout/ScrollToTop';
 import { WhatsAppButton } from './components/WhatsAppButton';
+import { genericServices, getServiceSubServices, servicePath, subServicePath } from './data/servicePages';
+import { seoSubServices } from './data/seoSubServices';
 import Home from './pages/Home';
 
 // Interior pages are code-split so the first paint only ships what it needs.
 const Services = lazy(() => import('./pages/Services'));
+const Pricing = lazy(() => import('./pages/Pricing'));
+const Seo = lazy(() => import('./pages/Seo'));
+const SeoSubServicePage = lazy(() => import('./pages/SeoSubService'));
+const ServicePage = lazy(() => import('./pages/ServicePage'));
+const ServiceSubServicePage = lazy(() => import('./pages/ServiceSubServicePage'));
 const About = lazy(() => import('./pages/About'));
 const Portfolio = lazy(() => import('./pages/Portfolio'));
 const Contact = lazy(() => import('./pages/Contact'));
@@ -37,6 +44,35 @@ export default function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/services" element={<Services />} />
+            <Route path="/pricing" element={<Pricing />} />
+            <Route path="/services/seo" element={<Seo />} />
+            {seoSubServices.map((subService) => (
+              <Route
+                key={subService.slug}
+                path={`/services/seo/${subService.slug}`}
+                element={<SeoSubServicePage subService={subService} />}
+              />
+            ))}
+            {genericServices.map((service) => (
+              <Fragment key={service.slug}>
+                <Route
+                  path={servicePath(service.slug)}
+                  element={<ServicePage service={service} />}
+                />
+                {getServiceSubServices(service).map((subService) => (
+                  <Route
+                    key={subService.slug}
+                    path={subServicePath(service.slug, subService.slug)}
+                    element={
+                      <ServiceSubServicePage
+                        service={service}
+                        subService={subService}
+                      />
+                    }
+                  />
+                ))}
+              </Fragment>
+            ))}
             <Route path="/about" element={<About />} />
             <Route path="/portfolio" element={<Portfolio />} />
             <Route path="/contact" element={<Contact />} />

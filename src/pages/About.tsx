@@ -9,7 +9,7 @@ import { Reveal } from '../components/ui/Reveal';
 import { SectionHeading } from '../components/ui/SectionHeading';
 import { businessVerticals } from '../data/verticals';
 import { values, notDoing } from '../data/values';
-import { services } from '../data/services';
+import { services, serviceHref } from '../data/services';
 import { useSeo, buildBreadcrumbJsonLd } from '../lib/seo';
 
 export default function About() {
@@ -289,7 +289,7 @@ export default function About() {
             {services.map((service, index) => (
               <Reveal as="li" key={service.slug} delay={index * 50}>
                 <Link
-                  to={`/services#${service.slug}`}
+                  to={serviceHref(service.slug)}
                   className="group flex h-full items-start gap-4 rounded-2xl border border-ink-100 bg-white p-5 shadow-soft transition-[transform,box-shadow,border-color] duration-300 hover:-translate-y-1 hover:border-brand-200 hover:shadow-lift"
                 >
                   <IconTile tone="brand" size="sm">

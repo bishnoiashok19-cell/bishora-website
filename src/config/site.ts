@@ -83,10 +83,9 @@ export const whatsappConfig = {
  * instead of inventing social links.
  */
 export const socialConfig = {
-  facebook: '',
-  instagram: '',
-  linkedin: '',
-  x: '',
+  facebook: 'https://www.facebook.com/profile.php?id=61595577671366',
+  instagram: 'https://www.instagram.com/bishora.in/',
+  linkedin: 'https://www.linkedin.com/company/14469663/',
 } as const;
 
 export type SocialKey = keyof typeof socialConfig;
@@ -95,6 +94,7 @@ export type SocialKey = keyof typeof socialConfig;
 export const navLinks = [
   { label: 'Home', to: '/', description: 'What Bishora does and how we work' },
   { label: 'Services', to: '/services', description: 'SEO, ads, websites and social media' },
+  { label: 'Pricing', to: '/pricing', description: 'Starting prices, packages and what is included' },
   { label: 'About', to: '/about', description: 'The agency behind Bishora' },
   { label: 'Portfolio', to: '/portfolio', description: 'Projects and case study work' },
   { label: 'Contact', to: '/contact', description: 'Start a conversation with us' },
@@ -126,5 +126,11 @@ export const whatsappLink = (message: string = whatsappConfig.message): string =
 };
 
 /** Builds a mailto: link for the configured business email. */
-export const mailtoLink = (subject = 'New enquiry for Bishora'): string =>
-  `mailto:${contactConfig.email}?subject=${encodeURIComponent(subject)}`;
+export const mailtoLink = (
+  subject = 'New enquiry for Bishora',
+  body?: string,
+): string => {
+  const params = [`subject=${encodeURIComponent(subject)}`];
+  if (body && body.trim()) params.push(`body=${encodeURIComponent(body)}`);
+  return `mailto:${contactConfig.email}?${params.join('&')}`;
+};
