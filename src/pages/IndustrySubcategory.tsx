@@ -12,6 +12,7 @@ import { Reveal } from '../components/ui/Reveal';
 import { SectionHeading } from '../components/ui/SectionHeading';
 import {
   businessTypeCount,
+  businessTypePath,
   industryBySlug,
   industryPath,
   subcategoryCount,
@@ -223,7 +224,7 @@ function IndustrySubcategoryPage({
               id="business-types-heading"
               eyebrow="Business types"
               title={`Business types in ${subcategory.name}.`}
-              description="These are the specific business types covered by this group. Each card links to the existing Bishora services that usually apply."
+              description="These are the specific business types covered by this group. Each card opens a dedicated page with what the business does, what to get right online and the support that fits."
             />
           </Reveal>
 
@@ -232,7 +233,11 @@ function IndustrySubcategoryPage({
               <Reveal as="li" key={type.slug} delay={index * 40}>
                 <BusinessTypeCard
                   businessType={type}
-                  serviceSlugs={subcategory.serviceSlugs}
+                  to={businessTypePath(
+                    industry.slug,
+                    subcategory.slug,
+                    type.slug,
+                  )}
                 />
               </Reveal>
             ))}

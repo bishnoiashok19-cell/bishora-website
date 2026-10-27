@@ -29,22 +29,32 @@ export function IndustryMobileNav({ onNavigate }: IndustryMobileNavProps) {
 
   return (
     <li>
-      <button
-        type="button"
-        aria-expanded={open}
-        aria-controls={panelId}
-        onClick={() => setOpen((current) => !current)}
-        className="flex w-full items-center justify-between gap-4 py-4 text-left text-lg font-semibold text-ink-900 transition-colors hover:text-brand-700"
-      >
-        Choose Your Business
-        <ChevronDown
-          className={cn(
-            'size-5 shrink-0 text-ink-400 transition-transform duration-200',
-            open && 'rotate-180',
-          )}
-          aria-hidden="true"
-        />
-      </button>
+      <div className="flex items-center justify-between gap-3">
+        <Link
+          to={industriesPath}
+          onClick={onNavigate}
+          className="flex-1 py-4 text-lg font-semibold text-ink-900 transition-colors hover:text-brand-700"
+        >
+          Choose Your Business
+        </Link>
+
+        <button
+          type="button"
+          aria-expanded={open}
+          aria-controls={panelId}
+          aria-label="Browse business categories"
+          onClick={() => setOpen((current) => !current)}
+          className="inline-flex size-11 shrink-0 items-center justify-center rounded-full text-ink-500 transition-colors hover:bg-ink-50 hover:text-ink-900"
+        >
+          <ChevronDown
+            className={cn(
+              'size-5 text-ink-400 transition-transform duration-200',
+              open && 'rotate-180',
+            )}
+            aria-hidden="true"
+          />
+        </button>
+      </div>
 
       <div id={panelId} hidden={!open} className="pb-4">
         <Link
@@ -62,44 +72,45 @@ export function IndustryMobileNav({ onNavigate }: IndustryMobileNavProps) {
 
             return (
               <li key={industry.slug}>
-                <button
-                  type="button"
-                  aria-expanded={isExpanded}
-                  aria-controls={subPanelId}
-                  onClick={() =>
-                    setExpanded((current) =>
-                      current === industry.slug ? null : industry.slug,
-                    )
-                  }
-                  className="flex min-h-11 w-full items-center gap-2.5 rounded-lg px-2 py-2 text-left text-[0.95rem] font-medium text-ink-700 transition-colors hover:bg-ink-50 hover:text-brand-800"
-                >
-                  <span className="w-5 shrink-0 text-right font-display text-[0.7rem] font-bold tabular-nums text-ink-400">
-                    {String(industry.number).padStart(2, '0')}
-                  </span>
-                  <span className="flex-1 leading-snug">{industry.name}</span>
-                  <ChevronDown
-                    className={cn(
-                      'size-4 shrink-0 text-ink-400 transition-transform duration-200',
-                      isExpanded && 'rotate-180',
-                    )}
-                    aria-hidden="true"
-                  />
-                </button>
+                <div className="flex items-center gap-1">
+                  <Link
+                    to={industryPath(industry.slug)}
+                    onClick={onNavigate}
+                    className="flex min-h-11 flex-1 items-center gap-2.5 rounded-lg px-2 py-2 text-left text-[0.95rem] font-medium text-ink-700 transition-colors hover:bg-ink-50 hover:text-brand-800"
+                  >
+                    <span className="w-5 shrink-0 text-right font-display text-[0.7rem] font-bold tabular-nums text-ink-400">
+                      {String(industry.number).padStart(2, '0')}
+                    </span>
+                    <span className="flex-1 leading-snug">{industry.name}</span>
+                  </Link>
+
+                  <button
+                    type="button"
+                    aria-expanded={isExpanded}
+                    aria-controls={subPanelId}
+                    aria-label={`Show ${industry.name} groups`}
+                    onClick={() =>
+                      setExpanded((current) =>
+                        current === industry.slug ? null : industry.slug,
+                      )
+                    }
+                    className="inline-flex size-11 shrink-0 items-center justify-center rounded-lg text-ink-400 transition-colors hover:bg-ink-50 hover:text-brand-800"
+                  >
+                    <ChevronDown
+                      className={cn(
+                        'size-4 transition-transform duration-200',
+                        isExpanded && 'rotate-180',
+                      )}
+                      aria-hidden="true"
+                    />
+                  </button>
+                </div>
 
                 <ul
                   id={subPanelId}
                   hidden={!isExpanded}
                   className="mb-1 ml-2 space-y-0.5 border-l border-ink-100 pl-3"
                 >
-                  <li>
-                    <Link
-                      to={industryPath(industry.slug)}
-                      onClick={onNavigate}
-                      className="flex min-h-9 items-center py-1.5 text-sm font-semibold text-brand-700"
-                    >
-                      All {industry.name} groups
-                    </Link>
-                  </li>
                   {industry.subcategories.map((subcategory) => (
                     <li key={subcategory.slug}>
                       <Link

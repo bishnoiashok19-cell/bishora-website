@@ -21,6 +21,7 @@ const Contact = lazy(() => import('./pages/Contact'));
 const Industries = lazy(() => import('./pages/Industries'));
 const IndustryCategory = lazy(() => import('./pages/IndustryCategory'));
 const IndustrySubcategory = lazy(() => import('./pages/IndustrySubcategory'));
+const BusinessType = lazy(() => import('./pages/BusinessType'));
 const NotFound = lazy(() => import('./pages/NotFound'));
 
 function RouteFallback() {
@@ -87,6 +88,10 @@ export default function App() {
             <Route
               path="/industries/:industrySlug/:subcategorySlug"
               element={<IndustrySubcategory />}
+            />
+            <Route
+              path="/industries/:industrySlug/:subcategorySlug/:businessTypeSlug"
+              element={<BusinessType />}
             />
             <Route path="*" element={<NotFound />} />
           </Routes>

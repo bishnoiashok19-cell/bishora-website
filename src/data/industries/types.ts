@@ -23,8 +23,39 @@ export function slugify(value: string): string {
 export type BusinessType = {
   /** Display name, exactly as supplied in the directory. */
   name: string;
-  /** Reserved for the third URL level. */
   slug: string;
+  /** Unique one-sentence summary used on cards and as the meta description. */
+  description: string;
+  /** Unique paragraph explaining who the business serves and why online matters. */
+  focus: string;
+  /** A practical first step for this business type. */
+  start: string;
+  /** Specific activities this business type usually handles. */
+  does: string[];
+  /** Specific online priorities for this business type. */
+  online: string[];
+  /** Existing Bishora service slugs relevant to this exact business type. */
+  serviceSlugs: string[];
+};
+
+/** Per-business-type editorial content, stored outside the category files. */
+export type BusinessTypeContentSeed = {
+  name: string;
+  description: string;
+  focus: string;
+  start: string;
+  does: string[];
+  online: string[];
+  services: string[];
+};
+
+/** Content is grouped by the category and group it belongs to. */
+export type BusinessTypeContentGroup = {
+  /** Category slug, e.g. 'food-hospitality'. */
+  category: string;
+  /** Group slug, e.g. 'restaurants-dining'. */
+  subcategory: string;
+  types: BusinessTypeContentSeed[];
 };
 
 export type IndustrySubcategory = {

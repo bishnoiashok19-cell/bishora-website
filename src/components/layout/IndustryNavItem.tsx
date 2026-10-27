@@ -92,7 +92,7 @@ export function IndustryNavItem({ transparent }: IndustryNavItemProps) {
           aria-expanded={open}
           aria-controls="industry-mega-menu"
           aria-label="Browse business categories"
-          onClick={() => setOpen((current) => !current)}
+          onClick={() => setOpen(true)}
           className={cn(
             'inline-flex size-7 items-center justify-center rounded-full transition-colors duration-200',
             transparent
