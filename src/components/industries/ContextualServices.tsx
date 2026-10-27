@@ -8,45 +8,55 @@ import { IconTile } from '../ui/IconTile';
 type ServiceCopy = {
   problem: string;
   helps: string;
+  when: string;
   why: string;
 };
 
 /**
  * Plain-language explanation of what each service actually changes.
  *
- * The structure is deliberately problem → what Bishora can do → why it matters,
- * so a service is never recommended without a reason attached to it.
+ * The structure is deliberately problem → what Bishora can do → when it is
+ * useful → why it matters, so a service is only recommended when a real gap
+ * exists and never with a guaranteed-result claim attached.
  */
 const serviceCopy: Record<string, ServiceCopy> = {
   'google-business-profile': {
     problem:
-      'Google par listing adhoori ho, timing galat ho ya photos purani hon to customer bina call kiye next option par chala jaata hai.',
+      'Adhoori, galat ya outdated Google Business Profile customer ko bina call kiye doosre option par bhej sakti hai.',
     helps:
-      'Bishora listing ko current, complete aur review-ready banata hai — category, timings, photos, address aur contact sahi jagah.',
+      'Bishora business information, category, hours, photos, contact details aur review-readiness improve karta hai — jahan applicable ho.',
+    when:
+      'Jab profile incomplete, outdated, inconsistent ya poorly presented ho, ya important business information missing ho.',
     why:
-      'Near-me searches mein sahi information hi call aur walk-in ka pehla source hoti hai.',
+      'Local aur near-me searches mein customer aksar listing check karke next step leta hai. Isse rankings ya guaranteed calls ka promise nahi judta.',
   },
   'website-development': {
     problem:
-      'Agar customer ko website par 10 second mein samajh nahi aata ki aap kya karte hain, wo wapas search par chala jaata hai.',
+      'Website kholte hi customer ko clear na ho ki business kya karta hai, kaunsi services ya projects available hain aur enquiry kaise karni hai — to wo wapas search par chala jaata hai.',
     helps:
-      'Bishora ek fast, mobile-first website banata hai jahan services, photos, process aur contact ek hi jagah clear hote hain.',
+      'Ek fast, mobile-first website jo services/projects, important information, photos, process aur contact options clearly dikhaye.',
+    when:
+      'Jab website na ho, purani ho, samajhna mushkil ho, ya enquiry aur contact easy na kare.',
     why:
-      'Website aapki 24x7 sales sheet hai — enquiry se pehle ka bharosa yahin banta hai.',
+      'Website 24x7 digital sales asset ki tarah kaam kar sakti hai aur enquiry se pehle trust banane mein help karti hai.',
   },
   seo: {
     problem:
-      'Aapki exact service search karne par competitor ka page dikhta hai, aapka nahi.',
+      'Exact service aur location search karne par relevant competitor ka page dikh sakta hai, jabki business ka strong relevant page nahi hota.',
     helps:
-      'Bishora service-wise pages, clean structure aur local keywords par kaam karta hai — bina ranking guarantees ke.',
+      'Service-focused pages, clean site structure aur relevant local/search-focused content.',
+    when:
+      'Jab relevant service/location searches par business ka useful page na aaye, ya important services online clearly represent na hon.',
     why:
-      'Jo customer problem-specific search karta hai, wo sabse serious enquiry hoti hai.',
+      'Relevant search visibility potential customers ko business tak pahunchane mein help kar sakti hai. SEO rankings guarantee nahi karta.',
   },
   aeo: {
     problem:
       'Customer ab Google aur AI answers se seedha jawab chahta hai, sirf links nahi.',
     helps:
       'Bishora content ko sawal-jawab format mein saaf likhta hai taaki answer boxes aur AI results mein aapki information cite ho sake.',
+    when:
+      'Jab website par common sawalon ke clear answers na hon, ya content sirf brochure-style ho.',
     why:
       'Clear answers se brand ka naam decision ke waqt dikhta hai, chahe customer click kare ya na kare.',
   },
@@ -55,6 +65,8 @@ const serviceCopy: Record<string, ServiceCopy> = {
       'AI search tools tabhi suggest karte hain jab aapki information har jagah ek jaisi ho.',
     helps:
       'Bishora listings, content aur citations ko consistent rakhta hai taaki AI answers mein aapka naam sahi context ke saath aaye.',
+    when:
+      'Jab business ki information website, listings aur directories mein alag-alag ho.',
     why:
       'Generative search ek naya discovery channel hai; consistency hi wahan visibility banati hai.',
   },
@@ -63,6 +75,8 @@ const serviceCopy: Record<string, ServiceCopy> = {
       'Organic reach slow hoti hai aur season ke waqt khaali slots reh jaate hain.',
     helps:
       'Bishora targeted Google aur Meta ads chalata hai — clear offer, sahi area aur conversion-focused landing page ke saath.',
+    when:
+      'Jab offer, area aur landing page ready ho aur demand ko predictable flow chahiye ho.',
     why:
       'Ads tabhi kaam karte hain jab landing page aur follow-up ready ho, isliye ise priority ke hisaab se lagaya jaata hai.',
   },
@@ -71,6 +85,8 @@ const serviceCopy: Record<string, ServiceCopy> = {
       'Ad ya Instagram se traffic aata hai, lekin page par confusion ke kaaran customer chala jaata hai.',
     helps:
       'Bishora ek single-goal landing page banata hai — offer, proof, pricing hint aur ek clear enquiry button.',
+    when:
+      'Jab ads ya social se traffic aa raha ho lekin enquiries nahi ban rahi hon.',
     why:
       'Same traffic par better conversion ka matlab kam ad spend aur zyada enquiries.',
   },
@@ -79,6 +95,8 @@ const serviceCopy: Record<string, ServiceCopy> = {
       'Profile par purani photos hoti hain aur naye customer ko lagta hai business active nahi hai.',
     helps:
       'Bishora planned content, real photos aur timely replies se profile ko current aur bharosemand rakhta hai.',
+    when:
+      'Jab profile purani photos ya inactive lagti ho, ya customer ko recent kaam dikhana ho.',
     why:
       'Social profile aksar website se pehle dekha jaata hai — wahi first impression banta hai.',
   },
@@ -87,6 +105,8 @@ const serviceCopy: Record<string, ServiceCopy> = {
       'Enquiries WhatsApp par aati hain, lekin reply late hota hai ya message kho jaata hai.',
     helps:
       'Bishora catalogue, quick replies, broadcast lists aur follow-up flow set karta hai.',
+    when:
+      'Jab enquiries WhatsApp par aati hon lekin reply, catalogue ya follow-up consistent na ho.',
     why:
       'Fast aur clean WhatsApp response seedha booking aur repeat order mein badalta hai.',
   },
@@ -95,6 +115,8 @@ const serviceCopy: Record<string, ServiceCopy> = {
       'Purane customers aapko yaad nahi rehte aur naya offer unhe pahunchta nahi.',
     helps:
       'Bishora simple newsletter aur offer emails design karta hai — bina spam kiye.',
+    when:
+      'Jab repeat customers ho aur unhe naya offer ya update regularly nahi pahunchta.',
     why:
       'Repeat business sabse sasta revenue hota hai, especially seasonal businesses mein.',
   },
@@ -103,6 +125,8 @@ const serviceCopy: Record<string, ServiceCopy> = {
       'Website aur social par wahi generic text baar-baar repeat hota hai.',
     helps:
       'Bishora aapke actual kaam ke hisaab se guides, service copy aur photo captions likhta hai.',
+    when:
+      'Jab website aur social par wahi generic text repeat ho raha ho.',
     why:
       'Specific content hi customer ko lagta hai ki ye uske kaam ka hai.',
   },
@@ -111,6 +135,8 @@ const serviceCopy: Record<string, ServiceCopy> = {
       'Menu, price list aur offer posts har jagah alag style mein dikhte hain.',
     helps:
       'Bishora ek simple visual system banata hai — menu, posters, offer creatives aur profile assets.',
+    when:
+      'Jab menu, price list aur offer posts ka style har jagah alag ho.',
     why:
       'Consistent design chhoti business ko bhi organised aur trustworthy dikhata hai.',
   },
@@ -125,7 +151,7 @@ export type ContextualServicesProps = {
   className?: string;
 };
 
-/** Service cards with the problem, the practical help and the reason. */
+/** Service cards with the problem, the practical help, when it is useful and why. */
 export function ContextualServices({
   serviceSlugs,
   context,
@@ -170,6 +196,14 @@ export function ContextualServices({
                       </dt>
                       <dd className="mt-1 text-sm leading-relaxed text-ink-700">
                         {copy.helps}
+                      </dd>
+                    </div>
+                    <div>
+                      <dt className="text-[0.68rem] font-semibold tracking-[0.14em] text-ink-500 uppercase">
+                        Kab useful hai
+                      </dt>
+                      <dd className="mt-1 text-sm leading-relaxed text-ink-600">
+                        {copy.when}
                       </dd>
                     </div>
                     <div>

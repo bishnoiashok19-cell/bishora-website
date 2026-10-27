@@ -174,17 +174,6 @@ function IndustrySubcategoryPage({
                   description="Naam se similar lagne wale businesses ka kaam alag hota hai. Ye points check karein ki aapka business inse match karta hai ya nahi."
                 />
               </Reveal>
-
-              <Reveal delay={100}>
-                <div className="mt-6">
-                  <IndustryFigure
-                    image={image(2)}
-                    label="Ground reality"
-                    aspect="wide"
-                    sizes="(min-width: 1024px) 35vw, 100vw"
-                  />
-                </div>
-              </Reveal>
             </div>
 
             <div className="lg:col-span-7">
@@ -337,7 +326,7 @@ function IndustrySubcategoryPage({
               id="services-heading"
               eyebrow="Agar help chahiye"
               title="Is group ke liye kaunsi help practical hai?"
-              description="Ye services optional hain. Pehle apna self-check karein, phir decide karein ki kya khud karna hai aur kya outsource karna better hai."
+              description="Ye services optional hain aur wahi useful hain jahan aapke self-check mein actual gap mile. Pehle self-check karein, phir decide karein ki kya khud karna hai aur kya outsource karna practical hai."
             />
           </Reveal>
 

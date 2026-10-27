@@ -315,18 +315,6 @@ function IndustryCategoryPage({ industry }: IndustryCategoryPageProps) {
                   description="Ye order average case ke liye hai. Aapke business ka pattern alag ho sakta hai — apne actual enquiries se compare karein."
                 />
               </Reveal>
-
-              <Reveal delay={100}>
-                <div className="mt-6">
-                  <IndustryFigure
-                    image={image(2)}
-                    label="Priority check"
-                    aspect="wide"
-                    sizes="(min-width: 1024px) 35vw, 100vw"
-                    caption="Ek saath sab kuch badalne ki zaroorat nahi. Pehle wo cheez theek karein jo seedha enquiry se judi hai."
-                  />
-                </div>
-              </Reveal>
             </div>
 
             <div className="lg:col-span-7">
@@ -410,7 +398,7 @@ function IndustryCategoryPage({ industry }: IndustryCategoryPageProps) {
               id="services-heading"
               eyebrow="Agar help chahiye"
               title="Is category ke liye kaunsi help useful hoti hai?"
-              description="Ye services optional hain aur sirf wahan recommend ki gayi hain jahan ye actually kaam aati hain. Pehle apna self-check complete karein."
+              description="Ye services optional hain aur wahi useful hain jahan aapke self-check mein actual gap mile. Pehle self-check complete karein, phir relevant help par focus karein."
             />
           </Reveal>
 

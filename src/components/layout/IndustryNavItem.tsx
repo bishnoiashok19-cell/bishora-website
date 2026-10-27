@@ -16,16 +16,53 @@ export type IndustryNavItemProps = {
  * The label navigates to /industries while the chevron button opens the
  * structured mega menu. Escape, outside clicks and focus leaving the item all
  * close it, so keyboard users are never trapped.
+ *
+ * Hover stability:
+ *  - An invisible bridge under the trigger spans the gap between the trigger
+ *    row and the top of the mega menu, making one continuous hover region.
+ *  - The mega menu's own top padding overlaps that bridge, so the pointer is
+ *    always inside the item (or one of its descendants) on the way down.
+ *  - A 120ms close delay only absorbs sub-pixel/edge transitions; it is a
+ *    fallback, not the mechanism that keeps the menu open.
  */
 export function IndustryNavItem({ transparent }: IndustryNavItemProps) {
   const [open, setOpen] = useState(false);
   const wrapperRef = useRef<HTMLLIElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const closeTimerRef = useRef<number | null>(null);
   const location = useLocation();
 
   const isActive =
     location.pathname === '/industries' ||
     location.pathname.startsWith('/industries/');
+
+  const cancelClose = () => {
+    if (closeTimerRef.current !== null) {
+      window.clearTimeout(closeTimerRef.current);
+      closeTimerRef.current = null;
+    }
+  };
+
+  const openMenu = () => {
+    cancelClose();
+    setOpen(true);
+  };
+
+  const closeMenu = () => {
+    cancelClose();
+    setOpen(false);
+  };
+
+  /** Gives the pointer a moment to reach the bridge or the panel. */
+  const scheduleClose = () => {
+    cancelClose();
+    closeTimerRef.current = window.setTimeout(() => {
+      closeTimerRef.current = null;
+      setOpen(false);
+    }, 120);
+  };
+
+  useEffect(() => cancelClose, []);
 
   useEffect(() => {
     setOpen(false);
@@ -61,18 +98,18 @@ export function IndustryNavItem({ transparent }: IndustryNavItemProps) {
 
   const handleBlur = (event: FocusEvent<HTMLLIElement>) => {
     if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
-      setOpen(false);
+      closeMenu();
     }
   };
 
   return (
     <li
       ref={wrapperRef}
-      onMouseEnter={() => setOpen(true)}
-      onMouseLeave={() => setOpen(false)}
+      onMouseEnter={openMenu}
+      onMouseLeave={scheduleClose}
       onBlur={handleBlur}
     >
-      <div className="flex items-center">
+      <div className="relative flex items-center">
         <NavLink
           to="/industries"
           className={cn(
@@ -92,7 +129,7 @@ export function IndustryNavItem({ transparent }: IndustryNavItemProps) {
           aria-expanded={open}
           aria-controls="industry-mega-menu"
           aria-label="Browse business categories"
-          onClick={() => setOpen(true)}
+          onClick={() => (open ? closeMenu() : openMenu())}
           className={cn(
             'inline-flex size-7 items-center justify-center rounded-full transition-colors duration-200',
             transparent
@@ -109,10 +146,23 @@ export function IndustryNavItem({ transparent }: IndustryNavItemProps) {
             aria-hidden="true"
           />
         </button>
+
+        {/*
+          Invisible hover bridge: connects the trigger row to the mega menu so
+          the pointer never crosses a dead gap. Only rendered while the menu is
+          open, so it can never swallow clicks on the page below. Decorative,
+          so it stays out of the accessibility tree.
+        */}
+        {open ? (
+          <span
+            aria-hidden="true"
+            className="absolute inset-x-0 top-full h-10"
+          />
+        ) : null}
       </div>
 
       {open ? (
-        <IndustryMegaMenu onNavigate={() => setOpen(false)} />
+        <IndustryMegaMenu onNavigate={closeMenu} />
       ) : null}
     </li>
   );

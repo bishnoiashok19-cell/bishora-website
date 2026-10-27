@@ -116,7 +116,7 @@ export const industries: Industry[] = seeds.map((seed) => {
     ...seed,
     slug: industrySlug,
     guide: categoryGuide as CategoryGuide,
-    images: imagesForScene(categoryGuide.scene, 4, industrySlug),
+    images: imagesForScene(categoryGuide.scene, 2, industrySlug),
     subcategories: seed.subcategories.map((subcategory) => {
       const subcategorySlug = slugify(subcategory.name);
       const groupKey = `${industrySlug}/${subcategorySlug}`;
@@ -132,7 +132,7 @@ export const industries: Industry[] = seeds.map((seed) => {
         ...subcategory,
         slug: subcategorySlug,
         guide: groupGuide as SubcategoryGuide,
-        images: imagesForScene(groupGuide.scene, 3, groupKey),
+        images: imagesForScene(groupGuide.scene, 2, groupKey),
         businessTypes: subcategory.businessTypes.map(
           (name): BusinessType => {
             const slug = slugify(name);
@@ -175,7 +175,7 @@ export const industries: Industry[] = seeds.map((seed) => {
               online: content.online,
               serviceSlugs: content.services,
               guide: guide as BusinessTypeGuide,
-              images: imagesForScene(guide.scene, 4, key),
+              images: imagesForScene(guide.scene, 2, key),
             };
           },
         ),

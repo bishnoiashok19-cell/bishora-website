@@ -327,18 +327,6 @@ function BusinessTypePage({
                   description="Inme se koi bhi galti customer ko aapke paas aane se pehle rok sakti hai. Apne business par honestly check karein."
                 />
               </Reveal>
-
-              <Reveal delay={100}>
-                <div className="mt-6">
-                  <IndustryFigure
-                    image={image(2)}
-                    label="Customer view"
-                    aspect="wide"
-                    sizes="(min-width: 1024px) 35vw, 100vw"
-                    caption="Customer jo dekhta hai wahi uski reality hai — aapka actual kaam usse better ho sakta hai, lekin online proof ke bina wo pata nahi chalta."
-                  />
-                </div>
-              </Reveal>
             </div>
 
             <div className="lg:col-span-7">
@@ -423,14 +411,14 @@ function BusinessTypePage({
               id="help-heading"
               eyebrow="Agar help chahiye"
               title="Professional help kab useful hoti hai?"
-              description="Bahut si cheezein aap khud kar sakte hain. Professional help tab samajh aati hai jab kaam consistently ruk raha ho, ya jab galti ki cost zyada ho."
+              description="Ye services optional hain aur wahi useful hain jahan aapke self-check mein actual gap mile. Pehle self-check complete karein, phir relevant help par focus karein."
             />
           </Reveal>
 
           <div className="mt-10">
             <ContextualServices
               serviceSlugs={guide.services}
-              context="Ye services optional hain. Pehle apna self-check complete karein, phir decide karein ki kaunsa kaam khud karna hai aur kaunsa outsource karna practical hai."
+              context="Scope, timeline aur starting price har service page par diya gaya hai. Hum pehle problem samajhte hain, phir batate hain ki kaam karna worth hai ya nahi."
             />
           </div>
         </Container>
