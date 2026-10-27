@@ -64,14 +64,13 @@ export function Reveal({
 
     observer.observe(element);
 
-    // Safety net: never leave content hidden if the observer misbehaves.
+    // Safety net: never leave content hidden. If the observer has not fired
+    // (fast anchor jumps, restored scroll positions, print or screenshot
+    // capture), reveal the element anyway after a short delay.
     const timer = window.setTimeout(() => {
-      const current = element.getBoundingClientRect();
-      if (current.top < window.innerHeight && current.bottom > 0) {
-        show();
-        observer.disconnect();
-      }
-    }, 2500);
+      show();
+      observer.disconnect();
+    }, 1500);
 
     return () => {
       cancelled = true;

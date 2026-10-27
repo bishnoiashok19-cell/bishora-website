@@ -1,15 +1,20 @@
-import { ArrowDown, ArrowRight, Check, Lightbulb } from 'lucide-react';
+import { ArrowDown, ArrowRight, Lightbulb, Search } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
 import { CTASection } from '../components/CTASection';
-import { PageHero } from '../components/layout/PageHero';
-import NotFound from './NotFound';
 import { IndustryNextSteps } from '../components/industries/IndustryNextSteps';
-import { RelevantServices } from '../components/industries/RelevantServices';
+import { Checklist } from '../components/industries/Checklist';
+import { ContextualServices } from '../components/industries/ContextualServices';
+import { IndustryFigure } from '../components/industries/IndustryFigure';
+import { IndustryHero } from '../components/industries/IndustryHero';
+import { MistakeGrid } from '../components/industries/MistakeGrid';
+import { PriorityList } from '../components/industries/PriorityList';
+import { RelatedLinks } from '../components/industries/RelatedLinks';
 import { Button } from '../components/ui/Button';
 import { Container } from '../components/ui/Container';
 import { Reveal } from '../components/ui/Reveal';
 import { SectionHeading } from '../components/ui/SectionHeading';
 import {
+  businessTypeCount,
   businessTypePath,
   businessTypeRecord,
   industryPath,
@@ -21,6 +26,8 @@ import type {
   IndustrySubcategory,
 } from '../data/industries/types';
 import { buildBreadcrumbJsonLd, useSeo } from '../lib/seo';
+import { truncateText } from '../lib/utils';
+import NotFound from './NotFound';
 
 type BusinessTypePageProps = {
   industry: Industry;
@@ -57,43 +64,53 @@ function BusinessTypePage({
   subcategory,
   businessType,
 }: BusinessTypePageProps) {
+  const { guide } = businessType;
   const path = businessTypePath(
     industry.slug,
     subcategory.slug,
     businessType.slug,
   );
+  const image = (index: number) =>
+    businessType.images[index % businessType.images.length];
+
   const relatedTypes = subcategory.businessTypes
     .filter((item) => item.slug !== businessType.slug)
-    .slice(0, 8);
+    .slice(0, 6);
   const siblingGroups = industry.subcategories.filter(
     (item) => item.slug !== subcategory.slug,
   );
 
   useSeo({
-    title: `${businessType.name} — Digital Marketing & Web Services | Bishora`,
-    description: businessType.description,
+    title: `${businessType.name} — Online Guide, Website & Digital Priorities | Bishora`,
+    description: truncateText(guide.tagline),
     path,
     keywords: [
-      `${businessType.name.toLowerCase()} marketing`,
       `${businessType.name.toLowerCase()} website`,
-      `${businessType.name.toLowerCase()} seo`,
+      `${businessType.name.toLowerCase()} google profile`,
+      `${businessType.name.toLowerCase()} marketing`,
       subcategory.name.toLowerCase(),
+      industry.name.toLowerCase(),
     ],
+    image: image(0).src,
+    imageAlt: image(0).alt,
     jsonLd: buildBreadcrumbJsonLd([
       { name: 'Home', path: '/' },
       { name: 'Choose Your Business', path: '/industries' },
       { name: industry.name, path: industryPath(industry.slug) },
-      { name: subcategory.name, path: subcategoryPath(industry.slug, subcategory.slug) },
+      {
+        name: subcategory.name,
+        path: subcategoryPath(industry.slug, subcategory.slug),
+      },
       { name: businessType.name, path },
     ]),
   });
 
   return (
     <>
-      <PageHero
-        eyebrow="Business type"
+      <IndustryHero
+        eyebrow="Business type guide"
         title={businessType.name}
-        description={businessType.description}
+        description={guide.tagline}
         breadcrumb={[
           { label: 'Home', to: '/' },
           { label: 'Choose Your Business', to: '/industries' },
@@ -104,84 +121,141 @@ function BusinessTypePage({
           },
           { label: businessType.name },
         ]}
+        image={image(0)}
+        chips={[industry.name, subcategory.name, 'Self-check included']}
       >
-        <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-          <Button
-            href="#priorities"
-            size="lg"
-            iconRight={<ArrowDown className="size-5" aria-hidden="true" />}
-          >
-            See digital priorities
-          </Button>
-          <Button to="/contact" variant="outlineLight" size="lg">
-            Talk to us
-          </Button>
-        </div>
-      </PageHero>
+        <Button
+          href="#priorities"
+          size="lg"
+          iconRight={<ArrowDown className="size-5" aria-hidden="true" />}
+        >
+          Digital priorities dekhein
+        </Button>
+        <Button to="/contact" variant="outlineLight" size="lg">
+          Apne business ke baare mein bataayein
+        </Button>
+      </IndustryHero>
 
-      {/* What this business does */}
+      {/* What this business actually does */}
       <section
         aria-labelledby="what-it-does-heading"
         className="bg-white py-16 sm:py-20 lg:py-24"
-      >
-        <Container>
-          <Reveal>
-            <SectionHeading
-              id="what-it-does-heading"
-              eyebrow="The business"
-              title="What this business does."
-              description={`${businessType.name} businesses usually cover the following work:`}
-            />
-          </Reveal>
-
-          <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {businessType.does.map((item, index) => (
-              <Reveal as="li" key={item} delay={index * 60}>
-                <div className="flex h-full items-start gap-3 rounded-2xl border border-ink-100 bg-white p-5 shadow-soft">
-                  <Check
-                    className="mt-0.5 size-4 shrink-0 text-brand-600"
-                    strokeWidth={2.5}
-                    aria-hidden="true"
-                  />
-                  <p className="text-[0.95rem] leading-relaxed text-ink-700">
-                    {item}
-                  </p>
-                </div>
-              </Reveal>
-            ))}
-          </ul>
-        </Container>
-      </section>
-
-      {/* What to get right online */}
-      <section
-        aria-labelledby="online-heading"
-        className="bg-ink-50 py-20 sm:py-24"
       >
         <Container>
           <div className="grid gap-10 lg:grid-cols-12 lg:gap-14">
             <div className="lg:col-span-7">
               <Reveal>
                 <SectionHeading
-                  id="online-heading"
-                  eyebrow="Online presence"
-                  title={`What to get right online for ${businessType.name.toLowerCase()} businesses.`}
+                  id="what-it-does-heading"
+                  eyebrow="Kaam kya hai"
+                  title={`${businessType.name} business actually kya karti hai?`}
                   description={businessType.focus}
                 />
+              </Reveal>
+
+              <Reveal delay={80}>
+                <ul className="mt-7 grid gap-3 sm:grid-cols-2">
+                  {guide.does.map((item) => (
+                    <li
+                      key={item}
+                      className="flex items-start gap-3 rounded-xl border border-ink-100 bg-ink-50/60 p-4"
+                    >
+                      <span
+                        aria-hidden="true"
+                        className="mt-1 size-1.5 shrink-0 rounded-full bg-brand-500"
+                      />
+                      <span className="text-[0.925rem] leading-relaxed text-ink-700">
+                        {item}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
               </Reveal>
             </div>
 
             <div className="lg:col-span-5">
+              <Reveal delay={120}>
+                <IndustryFigure
+                  image={image(1)}
+                  label="Roz ka kaam"
+                  aspect="portrait"
+                  sizes="(min-width: 1024px) 40vw, 100vw"
+                  caption="Customer ke liye aapka kaam tab clear hota hai jab wo usey online dekh sake."
+                />
+              </Reveal>
+            </div>
+          </div>
+        </Container>
+      </section>
+
+      {/* How customers discover this business */}
+      <section
+        aria-labelledby="discovery-heading"
+        className="bg-ink-50 py-16 sm:py-20 lg:py-24"
+      >
+        <Container>
+          <div className="grid gap-10 lg:grid-cols-12 lg:gap-14">
+            <div className="lg:col-span-5 lg:order-2">
+              <Reveal>
+                <SectionHeading
+                  id="discovery-heading"
+                  eyebrow="Discovery"
+                  title="Customer aapko online kaise dhoondhta hai?"
+                  description="Har business ka search pattern alag hota hai. Ye wo raaste hain jinse log aap tak pahunchte hain — inhe apne actual business se match karein."
+                />
+              </Reveal>
+
               <Reveal delay={100}>
-                <div className="rounded-2xl border border-brand-100 bg-brand-50/60 p-6 sm:p-7">
-                  <span className="inline-flex size-10 items-center justify-center rounded-xl bg-white text-brand-700 shadow-soft">
-                    <Lightbulb className="size-5" aria-hidden="true" />
-                  </span>
-                  <p className="mt-4 text-xs font-semibold uppercase tracking-[0.16em] text-brand-700">
-                    Start here
+                <div className="mt-6 rounded-2xl border border-brand-100 bg-white p-5 shadow-soft">
+                  <div className="flex items-center gap-2.5">
+                    <span className="inline-flex size-9 items-center justify-center rounded-xl bg-brand-50 text-brand-700 ring-1 ring-brand-100">
+                      <Search className="size-4" aria-hidden="true" />
+                    </span>
+                    <p className="text-xs font-semibold tracking-[0.16em] text-brand-700 uppercase">
+                      Yaad rakhein
+                    </p>
+                  </div>
+                  <p className="mt-3 text-sm leading-relaxed text-ink-600">
+                    Customer usually ek hi waqt par 3-4 options dekhta hai. Jo
+                    option sabse clear aur current lagta hai, usi par call ya
+                    enquiry jaati hai — sabse zyada fancy wale par nahi.
                   </p>
-                  <p className="mt-2 text-[0.975rem] leading-relaxed text-ink-700">
-                    {businessType.start}
+                </div>
+              </Reveal>
+            </div>
+
+            <div className="lg:col-span-7 lg:order-1">
+              <Reveal>
+                <ol className="space-y-3">
+                  {guide.find.map((item, index) => (
+                    <li
+                      key={item}
+                      className="flex items-start gap-4 rounded-2xl border border-ink-100 bg-white p-4 shadow-soft sm:p-5"
+                    >
+                      <span
+                        aria-hidden="true"
+                        className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-ink-950 font-display text-sm font-bold tabular-nums text-white"
+                      >
+                        {String(index + 1).padStart(2, '0')}
+                      </span>
+                      <span className="pt-1 text-[0.95rem] leading-relaxed text-ink-700">
+                        {item}
+                      </span>
+                    </li>
+                  ))}
+                </ol>
+              </Reveal>
+
+              <Reveal delay={100}>
+                <div className="mt-6 rounded-2xl border border-ink-100 bg-white p-5 shadow-soft">
+                  <p className="text-xs font-semibold tracking-[0.16em] text-ink-500 uppercase">
+                    Enquiry moment
+                  </p>
+                  <p className="mt-2 text-sm leading-relaxed text-ink-600">
+                    Jab customer decide kar leta hai, tab wo call, WhatsApp ya
+                    form use karta hai. Isi ek step ko simple rakhein — number
+                    tap par kaam kare, form chhota ho aur reply ka expectation
+                    clear ho.
                   </p>
                 </div>
               </Reveal>
@@ -190,159 +264,251 @@ function BusinessTypePage({
         </Container>
       </section>
 
-      {/* Digital priorities */}
+      {/* What must stay right online */}
       <section
-        id="priorities"
-        aria-labelledby="priorities-heading"
-        className="scroll-mt-24 bg-white py-20 sm:py-24"
+        aria-labelledby="must-heading"
+        className="bg-white py-16 sm:py-20 lg:py-24"
       >
         <Container>
           <Reveal>
             <SectionHeading
-              id="priorities-heading"
-              eyebrow="Digital priorities"
-              title={`Where ${businessType.name.toLowerCase()} businesses should focus first.`}
-              description="Work through these in order. The right scope depends on how your business actually gets enquiries, so treat this as a starting point rather than a fixed package."
+              id="must-heading"
+              eyebrow="Online essentials"
+              title="Online kya sahi rakhna zaroori hai?"
+              description="Ye cheezein har platform par same honi chahiye. Customer ek jagah dekh kar doosri jagah verify karta hai — mismatch usi waqt trust todta hai."
             />
           </Reveal>
 
-          <ul className="mt-10 grid gap-4 lg:grid-cols-3">
-            {businessType.online.map((item, index) => (
-              <Reveal as="li" key={item} delay={index * 60}>
-                <div className="h-full rounded-2xl border border-ink-100 bg-white p-6 shadow-soft">
-                  <span className="font-display text-sm font-bold tabular-nums text-brand-600">
-                    {String(index + 1).padStart(2, '0')}
+          <div className="mt-10 grid gap-6 lg:grid-cols-2">
+            <Reveal>
+              <div className="h-full rounded-2xl border border-ink-100 bg-white p-6 shadow-soft sm:p-7">
+                <div className="flex items-center gap-2.5">
+                  <span className="inline-flex size-9 items-center justify-center rounded-xl bg-brand-50 text-brand-700 ring-1 ring-brand-100">
+                    <Lightbulb className="size-4" aria-hidden="true" />
                   </span>
-                  <p className="mt-3 text-[0.975rem] leading-relaxed text-ink-700">
-                    {item}
-                  </p>
+                  <h3 className="font-display text-lg font-bold text-ink-950">
+                    Har jagah same information
+                  </h3>
                 </div>
-              </Reveal>
-            ))}
-          </ul>
+                <Checklist items={guide.must} columns={1} className="mt-5" />
+              </div>
+            </Reveal>
+
+            <Reveal delay={80}>
+              <div className="h-full rounded-2xl border border-ink-100 bg-ink-50/60 p-6 sm:p-7">
+                <div className="flex items-center gap-2.5">
+                  <span className="inline-flex size-9 items-center justify-center rounded-xl bg-white text-brand-700 ring-1 ring-brand-100">
+                    <ArrowRight className="size-4" aria-hidden="true" />
+                  </span>
+                  <h3 className="font-display text-lg font-bold text-ink-950">
+                    Website par kya hona chahiye
+                  </h3>
+                </div>
+                <Checklist items={guide.site} columns={1} className="mt-5" />
+              </div>
+            </Reveal>
+          </div>
         </Container>
       </section>
 
-      {/* How Bishora can help */}
+      {/* Common mistakes */}
       <section
-        aria-labelledby="type-help-heading"
-        className="bg-ink-50 py-20 sm:py-24"
+        aria-labelledby="mistakes-heading"
+        className="bg-ink-50 py-16 sm:py-20 lg:py-24"
+      >
+        <Container>
+          <div className="grid gap-10 lg:grid-cols-12 lg:gap-14">
+            <div className="lg:col-span-5">
+              <Reveal>
+                <SectionHeading
+                  id="mistakes-heading"
+                  eyebrow="Common mistakes"
+                  title="Ye galtiyan enquiries kam karti hain."
+                  description="Inme se koi bhi galti customer ko aapke paas aane se pehle rok sakti hai. Apne business par honestly check karein."
+                />
+              </Reveal>
+
+              <Reveal delay={100}>
+                <div className="mt-6">
+                  <IndustryFigure
+                    image={image(2)}
+                    label="Customer view"
+                    aspect="wide"
+                    sizes="(min-width: 1024px) 35vw, 100vw"
+                    caption="Customer jo dekhta hai wahi uski reality hai — aapka actual kaam usse better ho sakta hai, lekin online proof ke bina wo pata nahi chalta."
+                  />
+                </div>
+              </Reveal>
+            </div>
+
+            <div className="lg:col-span-7">
+              <Reveal delay={80}>
+                <MistakeGrid items={guide.mistakes} />
+              </Reveal>
+            </div>
+          </div>
+        </Container>
+      </section>
+
+      {/* Ordered priorities */}
+      <section
+        id="priorities"
+        aria-labelledby="priorities-heading"
+        className="scroll-mt-24 bg-white py-16 sm:py-20 lg:py-24"
+      >
+        <Container>
+          <div className="grid gap-10 lg:grid-cols-12 lg:gap-14">
+            <div className="lg:col-span-5">
+              <Reveal>
+                <SectionHeading
+                  id="priorities-heading"
+                  eyebrow="Digital priorities"
+                  title={`${businessType.name} ke liye kaam kis order mein karein?`}
+                  description="Har business ka starting point alag hota hai. Ye order average case ke liye hai — apne enquiries ke hisaab se adjust karein."
+                />
+              </Reveal>
+            </div>
+
+            <div className="lg:col-span-7">
+              <Reveal delay={80}>
+                <PriorityList items={guide.priorities} />
+              </Reveal>
+            </div>
+          </div>
+        </Container>
+      </section>
+
+      {/* Self-check */}
+      <section
+        aria-labelledby="self-check-heading"
+        className="bg-ink-50 py-16 sm:py-20 lg:py-24"
+      >
+        <Container>
+          <Reveal>
+            <div className="rounded-3xl border border-ink-100 bg-white p-6 shadow-soft sm:p-8 lg:p-10">
+              <div className="grid gap-8 lg:grid-cols-12 lg:gap-12">
+                <div className="lg:col-span-4">
+                  <p className="text-xs font-semibold tracking-[0.18em] text-brand-700 uppercase">
+                    Self-check
+                  </p>
+                  <h2
+                    id="self-check-heading"
+                    className="mt-3 font-display text-2xl font-bold text-ink-950 sm:text-3xl"
+                  >
+                    10 minute ka apna audit
+                  </h2>
+                  <p className="mt-3 text-[0.95rem] leading-relaxed text-ink-600">
+                    Kisi tool ki zaroorat nahi. Phone uthaayein aur ye cheezein
+                    khud check karein — jo missing mile, wahi aapka pehla kaam hai.
+                  </p>
+                </div>
+
+                <div className="lg:col-span-8">
+                  <Checklist items={guide.check} columns={2} />
+                </div>
+              </div>
+            </div>
+          </Reveal>
+        </Container>
+      </section>
+
+      {/* When professional help is useful */}
+      <section
+        aria-labelledby="help-heading"
+        className="bg-white py-16 sm:py-20 lg:py-24"
       >
         <Container>
           <Reveal>
             <SectionHeading
-              id="type-help-heading"
-              eyebrow="How Bishora can help"
-              title={`Support for ${businessType.name.toLowerCase()} businesses.`}
-              description="These are the existing services that usually matter for this specific business type. We will only recommend what your business actually needs."
+              id="help-heading"
+              eyebrow="Agar help chahiye"
+              title="Professional help kab useful hoti hai?"
+              description="Bahut si cheezein aap khud kar sakte hain. Professional help tab samajh aati hai jab kaam consistently ruk raha ho, ya jab galti ki cost zyada ho."
             />
           </Reveal>
 
-          <div className="mt-12">
-            <RelevantServices
-              serviceSlugs={businessType.serviceSlugs}
-              context="The scope, timeline and starting price for each service are set out on its own page and on the pricing page."
+          <div className="mt-10">
+            <ContextualServices
+              serviceSlugs={guide.services}
+              context="Ye services optional hain. Pehle apna self-check complete karein, phir decide karein ki kaunsa kaam khud karna hai aur kaunsa outsource karna practical hai."
             />
           </div>
         </Container>
       </section>
 
-      {/* Related business types and groups */}
-      {relatedTypes.length > 0 || siblingGroups.length > 0 ? (
-        <section
-          aria-labelledby="related-types-heading"
-          className="bg-white py-16 sm:py-20"
-        >
-          <Container>
-            {relatedTypes.length > 0 ? (
-              <>
-                <Reveal>
-                  <SectionHeading
-                    id="related-types-heading"
-                    eyebrow={subcategory.name}
-                    title="Related business types."
-                    description="These types sit in the same group, but their online priorities are not identical."
-                  />
-                </Reveal>
+      {/* Related links */}
+      <section
+        aria-labelledby="related-heading"
+        className="bg-ink-50 py-16 sm:py-20 lg:py-24"
+      >
+        <Container>
+          <RelatedLinks
+            id="related-heading"
+            eyebrow={subcategory.name}
+            title="Isi group ke doosre business types."
+            description="Same group, lekin customer aur online priorities alag. Apna exact type khol kar compare karein."
+            items={relatedTypes.map((item) => ({
+              name: item.name,
+              to: businessTypePath(industry.slug, subcategory.slug, item.slug),
+              description: item.guide.tagline,
+            }))}
+          />
 
-                <ul className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                  {relatedTypes.map((item) => (
-                    <li key={item.slug}>
-                      <Link
-                        to={businessTypePath(
-                          industry.slug,
-                          subcategory.slug,
-                          item.slug,
-                        )}
-                        className="group flex h-full items-start justify-between gap-4 rounded-xl border border-ink-100 bg-white p-4 shadow-soft transition-[transform,box-shadow,border-color] duration-300 hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-lift"
-                      >
-                        <span>
-                          <span className="block font-display text-[1.0625rem] font-bold text-ink-950">
-                            {item.name}
-                          </span>
-                          <span className="mt-0.5 block text-xs leading-relaxed text-ink-500">
-                            {item.description}
-                          </span>
-                        </span>
-                        <ArrowRight
-                          className="mt-1 size-4 shrink-0 text-ink-300 transition-[color,transform] duration-200 group-hover:translate-x-0.5 group-hover:text-brand-600"
-                          aria-hidden="true"
-                        />
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </>
-            ) : null}
+          <div className="mt-14">
+            <RelatedLinks
+              id="sibling-groups-heading"
+              eyebrow={industry.name}
+              title={`${industry.name} ke doosre groups.`}
+              description={`Is group mein ${subcategory.businessTypes.length} business types hain. Agar aapka kaam kisi doosre group se behtar match karta hai, wahan se shuru karein.`}
+              items={siblingGroups.map((item) => ({
+                name: item.name,
+                to: subcategoryPath(industry.slug, item.slug),
+                description: item.guide.tagline,
+                meta: `${item.businessTypes.length} business types`,
+              }))}
+              columns={2}
+            />
+          </div>
 
-            {siblingGroups.length > 0 ? (
-              <div className={relatedTypes.length > 0 ? 'mt-14' : undefined}>
-                <Reveal>
-                  <SectionHeading
-                    eyebrow={industry.name}
-                    title={`Other groups in ${industry.name}.`}
-                    description="If your business sits closer to another group, open it to see the exact types covered."
-                  />
-                </Reveal>
-
-                <ul className="mt-8 grid gap-3 sm:grid-cols-2">
-                  {siblingGroups.map((item) => (
-                    <li key={item.slug}>
-                      <Link
-                        to={subcategoryPath(industry.slug, item.slug)}
-                        className="group flex items-center justify-between gap-4 rounded-xl border border-ink-100 bg-white p-4 shadow-soft transition-[transform,box-shadow,border-color] duration-300 hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-lift"
-                      >
-                        <span>
-                          <span className="block font-display text-[1.0625rem] font-bold text-ink-950">
-                            {item.name}
-                          </span>
-                          <span className="mt-0.5 block text-xs text-ink-500">
-                            {item.businessTypes.length} business types
-                          </span>
-                        </span>
-                        <ArrowRight
-                          className="size-5 shrink-0 text-ink-300 transition-[color,transform] duration-200 group-hover:translate-x-0.5 group-hover:text-brand-600"
-                          aria-hidden="true"
-                        />
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ) : null}
-          </Container>
-        </section>
-      ) : null}
+          <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3 border-t border-ink-200/70 pt-6 text-sm">
+            <RelatedLinksCrumb
+              to={subcategoryPath(industry.slug, subcategory.slug)}
+              label={`Back to ${subcategory.name}`}
+            />
+            <RelatedLinksCrumb
+              to={industryPath(industry.slug)}
+              label={`All of ${industry.name}`}
+            />
+            <span className="text-ink-500">
+              {businessTypeCount(industry)} business types across {industry.subcategories.length} groups
+            </span>
+          </div>
+        </Container>
+      </section>
 
       <IndustryNextSteps
-        title={`Next steps for your ${businessType.name.toLowerCase()} business.`}
+        title={`${businessType.name} business ke liye next step.`}
+        description="Apna current website aur Google listing dekhein, ya humein business ke baare mein bataayein — hum batayenge ki pehla useful kaam kya hai."
       />
 
       <CTASection
         eyebrow={industry.name}
-        title={`Tell us about your ${businessType.name.toLowerCase()} business.`}
-        description="We will look at what you already have, identify the most useful next step and explain it plainly."
+        title={`${businessType.name} business?`}
+        description="Aap kya karte hain, kahan se customers aate hain aur abhi online kya hai — bas ye teen cheezein batayein. Hum seedha aur simple suggestion denge."
       />
     </>
+  );
+}
+
+/** Small text link used in the footer row of the related section. */
+function RelatedLinksCrumb({ to, label }: { to: string; label: string }) {
+  return (
+    <Link
+      to={to}
+      className="inline-flex items-center gap-1.5 font-semibold text-brand-700 transition-colors hover:text-brand-800"
+    >
+      {label}
+      <ArrowRight className="size-3.5" aria-hidden="true" />
+    </Link>
   );
 }

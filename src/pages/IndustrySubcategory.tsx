@@ -1,41 +1,36 @@
-import { ArrowDown, ArrowRight, Check, MapPin } from 'lucide-react';
+import { ArrowDown, ArrowRight } from 'lucide-react';
 import { Link, useParams } from 'react-router-dom';
 import { CTASection } from '../components/CTASection';
-import { PageHero } from '../components/layout/PageHero';
-import NotFound from './NotFound';
-import { BusinessTypeCard } from '../components/industries/BusinessTypeCard';
 import { IndustryNextSteps } from '../components/industries/IndustryNextSteps';
-import { RelevantServices } from '../components/industries/RelevantServices';
+import { BusinessTypeCard } from '../components/industries/BusinessTypeCard';
+import { Checklist } from '../components/industries/Checklist';
+import { ContextualServices } from '../components/industries/ContextualServices';
+import { IndustryFigure } from '../components/industries/IndustryFigure';
+import { IndustryHero } from '../components/industries/IndustryHero';
+import { MistakeGrid } from '../components/industries/MistakeGrid';
+import { PriorityList } from '../components/industries/PriorityList';
+import { RelatedLinks } from '../components/industries/RelatedLinks';
 import { Button } from '../components/ui/Button';
 import { Container } from '../components/ui/Container';
 import { Reveal } from '../components/ui/Reveal';
 import { SectionHeading } from '../components/ui/SectionHeading';
 import {
-  businessTypeCount,
   businessTypePath,
   industryBySlug,
   industryPath,
-  subcategoryCount,
   subcategoryPath,
 } from '../data/industries';
-import type {
-  Industry,
-  IndustrySubcategory,
-} from '../data/industries/types';
+import type { Industry, IndustrySubcategory } from '../data/industries/types';
 import { buildBreadcrumbJsonLd, useSeo } from '../lib/seo';
+import { truncateText } from '../lib/utils';
+import NotFound from './NotFound';
 
 export type IndustrySubcategoryPageProps = {
   industry: Industry;
   subcategory: IndustrySubcategory;
 };
 
-/** "A, B and C" — used to name the business types covered by a group. */
-function formatList(items: string[]): string {
-  if (items.length <= 1) return items[0] ?? '';
-  return `${items.slice(0, -1).join(', ')} and ${items[items.length - 1]}`;
-}
-
-/** Route entry: resolves both slugs and falls back to the 404 page. */
+/** Route entry: resolves category + group slugs, then falls back to the 404 page. */
 export default function IndustrySubcategoryRoute() {
   const { industrySlug = '', subcategorySlug = '' } = useParams();
   const industry = industryBySlug(industrySlug);
@@ -57,24 +52,26 @@ function IndustrySubcategoryPage({
   industry,
   subcategory,
 }: IndustrySubcategoryPageProps) {
+  const { guide } = subcategory;
   const path = subcategoryPath(industry.slug, subcategory.slug);
-  const siblings = industry.subcategories.filter(
+  const image = (index: number) => subcategory.images[index % subcategory.images.length];
+  const siblingGroups = industry.subcategories.filter(
     (item) => item.slug !== subcategory.slug,
   );
-  const groupIndex =
-    industry.subcategories.findIndex(
-      (item) => item.slug === subcategory.slug,
-    ) + 1;
 
   useSeo({
-    title: `${subcategory.name} — ${industry.name} Businesses | Bishora`,
-    description: `${subcategory.description} Explore the business types covered and the digital support that usually matters.`,
+    title: `${subcategory.name} — ${industry.name} Business Guide | Bishora`,
+    description: truncateText(guide.tagline),
     path,
     keywords: [
-      `${subcategory.name.toLowerCase()} marketing`,
-      `${subcategory.name.toLowerCase()} website`,
-      ...subcategory.businessTypes.map((type) => type.name.toLowerCase()),
+      subcategory.name.toLowerCase(),
+      `${subcategory.name.toLowerCase()} businesses`,
+      `${industry.name.toLowerCase()} ${subcategory.name.toLowerCase()}`,
+      'business types',
+      'online priorities',
     ],
+    image: image(0).src,
+    imageAlt: image(0).alt,
     jsonLd: buildBreadcrumbJsonLd([
       { name: 'Home', path: '/' },
       { name: 'Choose Your Business', path: '/industries' },
@@ -85,34 +82,37 @@ function IndustrySubcategoryPage({
 
   return (
     <>
-      <PageHero
-        eyebrow={`${industry.name} — Business group ${String(groupIndex).padStart(2, '0')}`}
+      <IndustryHero
+        eyebrow={industry.name}
         title={subcategory.name}
-        description={subcategory.description}
+        description={guide.tagline}
         breadcrumb={[
           { label: 'Home', to: '/' },
           { label: 'Choose Your Business', to: '/industries' },
           { label: industry.name, to: industryPath(industry.slug) },
           { label: subcategory.name },
         ]}
+        image={image(0)}
+        chips={[
+          `${subcategory.businessTypes.length} business types`,
+          `${industry.name}`,
+        ]}
       >
-        <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-          <Button
-            href="#business-types"
-            size="lg"
-            iconRight={<ArrowDown className="size-5" aria-hidden="true" />}
-          >
-            See business types
-          </Button>
-          <Button to="/contact" variant="outlineLight" size="lg">
-            Talk to us
-          </Button>
-        </div>
-      </PageHero>
+        <Button
+          href="#business-types"
+          size="lg"
+          iconRight={<ArrowDown className="size-5" aria-hidden="true" />}
+        >
+          Business types dekhein
+        </Button>
+        <Button to="/contact" variant="outlineLight" size="lg">
+          Apna business batayein
+        </Button>
+      </IndustryHero>
 
-      {/* What this group includes */}
+      {/* Practical explanation */}
       <section
-        aria-labelledby="group-overview-heading"
+        aria-labelledby="group-intro-heading"
         className="bg-white py-16 sm:py-20 lg:py-24"
       >
         <Container>
@@ -120,91 +120,99 @@ function IndustrySubcategoryPage({
             <div className="lg:col-span-7">
               <Reveal>
                 <SectionHeading
-                  id="group-overview-heading"
-                  eyebrow={industry.name}
-                  title={`What ${subcategory.name} includes.`}
+                  id="group-intro-heading"
+                  eyebrow="Group overview"
+                  title={`${subcategory.name} mein kaam kaise hota hai?`}
                 />
+              </Reveal>
 
-                <p className="mt-6 text-[1.0625rem] leading-relaxed text-ink-600">
-                  This group covers{' '}
-                  {formatList(
-                    subcategory.businessTypes.map((type) => type.name),
-                  )}{' '}
-                  — {subcategory.businessTypes.length} business types in total.
-                  It sits inside the{' '}
-                  <Link
-                    to={industryPath(industry.slug)}
-                    className="font-medium text-brand-700 underline decoration-brand-200 underline-offset-4 hover:text-brand-800"
-                  >
-                    {industry.name}
-                  </Link>{' '}
-                  category, alongside {subcategoryCount(industry) - 1} other
-                  business groups.
+              <div className="mt-6 space-y-4">
+                {guide.intro.map((paragraph, index) => (
+                  <Reveal key={paragraph} delay={index * 70}>
+                    <p className="text-[1.0125rem] leading-relaxed text-ink-600">
+                      {paragraph}
+                    </p>
+                  </Reveal>
+                ))}
+              </div>
+
+              <Reveal delay={120}>
+                <p className="mt-6 rounded-2xl border border-brand-100 bg-brand-50/50 p-5 text-[0.95rem] leading-relaxed text-ink-700">
+                  {subcategory.digitalFocus}
                 </p>
-
-                <div className="mt-7 rounded-2xl border border-brand-100 bg-brand-50/60 p-6">
-                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brand-700">
-                    Digital focus
-                  </p>
-                  <p className="mt-2 text-[0.975rem] leading-relaxed text-ink-700">
-                    {subcategory.digitalFocus}
-                  </p>
-                </div>
               </Reveal>
             </div>
 
             <div className="lg:col-span-5">
               <Reveal delay={100}>
-                <div className="rounded-2xl border border-ink-100 bg-white p-6 shadow-soft sm:p-7">
-                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-brand-700">
-                    Group overview
-                  </p>
+                <IndustryFigure
+                  image={image(1)}
+                  label="Kaam ki jhalak"
+                  aspect="video"
+                  sizes="(min-width: 1024px) 40vw, 100vw"
+                  caption="Har business type ka customer alag hota hai, isliye ek hi template sab par lagana kaam nahi karta."
+                />
+              </Reveal>
+            </div>
+          </div>
+        </Container>
+      </section>
 
-                  <dl className="mt-4 grid grid-cols-2 gap-4">
-                    <div className="rounded-xl bg-ink-50 p-4">
-                      <dt className="text-xs text-ink-500">Business types</dt>
-                      <dd className="mt-1 font-display text-2xl font-bold text-ink-950">
-                        {subcategory.businessTypes.length}
-                      </dd>
-                    </div>
-                    <div className="rounded-xl bg-ink-50 p-4">
-                      <dt className="text-xs text-ink-500">
-                        Groups in category
-                      </dt>
-                      <dd className="mt-1 font-display text-2xl font-bold text-ink-950">
-                        {subcategoryCount(industry)}
-                      </dd>
-                    </div>
-                  </dl>
+      {/* What these businesses do */}
+      <section
+        aria-labelledby="group-does-heading"
+        className="bg-ink-50 py-16 sm:py-20 lg:py-24"
+      >
+        <Container>
+          <div className="grid gap-10 lg:grid-cols-12 lg:gap-14">
+            <div className="lg:col-span-5">
+              <Reveal>
+                <SectionHeading
+                  id="group-does-heading"
+                  eyebrow="Roz ka kaam"
+                  title="Ye businesses actually kya karti hain?"
+                  description="Naam se similar lagne wale businesses ka kaam alag hota hai. Ye points check karein ki aapka business inse match karta hai ya nahi."
+                />
+              </Reveal>
 
-                  <h3 className="mt-6 font-display text-sm font-bold uppercase tracking-[0.14em] text-ink-950">
-                    Included in this group
+              <Reveal delay={100}>
+                <div className="mt-6">
+                  <IndustryFigure
+                    image={image(2)}
+                    label="Ground reality"
+                    aspect="wide"
+                    sizes="(min-width: 1024px) 35vw, 100vw"
+                  />
+                </div>
+              </Reveal>
+            </div>
+
+            <div className="lg:col-span-7">
+              <Reveal delay={80}>
+                <ul className="grid gap-3 sm:grid-cols-2">
+                  {guide.does.map((item) => (
+                    <li
+                      key={item}
+                      className="flex items-start gap-3 rounded-xl border border-ink-100 bg-white p-4 shadow-soft"
+                    >
+                      <span
+                        aria-hidden="true"
+                        className="mt-1 size-1.5 shrink-0 rounded-full bg-brand-500"
+                      />
+                      <span className="text-[0.925rem] leading-relaxed text-ink-700">
+                        {item}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </Reveal>
+
+              <Reveal delay={120}>
+                <div className="mt-8 rounded-2xl border border-ink-100 bg-white p-5 shadow-soft sm:p-6">
+                  <h3 className="font-display text-lg font-bold text-ink-950">
+                    Customer kya expect karta hai
                   </h3>
-
-                  <ul className="mt-3 space-y-2">
-                    {subcategory.businessTypes.map((type) => (
-                      <li
-                        key={type.slug}
-                        className="flex items-start gap-2.5 text-sm text-ink-700"
-                      >
-                        <Check
-                          className="mt-0.5 size-4 shrink-0 text-brand-600"
-                          strokeWidth={2.5}
-                          aria-hidden="true"
-                        />
-                        {type.name}
-                      </li>
-                    ))}
-                  </ul>
-
-                  <p className="mt-5 flex items-start gap-2 text-xs leading-relaxed text-ink-500">
-                    <MapPin
-                      className="mt-0.5 size-3.5 shrink-0 text-brand-600"
-                      aria-hidden="true"
-                    />
-                    Part of {industry.name} — {businessTypeCount(industry)}{' '}
-                    business types across the category.
-                  </p>
+                  <Checklist items={guide.expect} columns={1} className="mt-4" />
                 </div>
               </Reveal>
             </div>
@@ -212,31 +220,31 @@ function IndustrySubcategoryPage({
         </Container>
       </section>
 
-      {/* Business types */}
+      {/* Included business types */}
       <section
         id="business-types"
-        aria-labelledby="business-types-heading"
-        className="scroll-mt-24 bg-ink-50 py-20 sm:py-24"
+        aria-labelledby="types-heading"
+        className="scroll-mt-24 bg-white py-16 sm:py-20 lg:py-24"
       >
         <Container>
           <Reveal>
             <SectionHeading
-              id="business-types-heading"
-              eyebrow="Business types"
-              title={`Business types in ${subcategory.name}.`}
-              description="These are the specific business types covered by this group. Each card opens a dedicated page with what the business does, what to get right online and the support that fits."
+              id="types-heading"
+              eyebrow="Included business types"
+              title={`${subcategory.businessTypes.length} business types in ${subcategory.name}.`}
+              description="Apna exact type khol kar uske liye likha guide, priorities aur self-check dekhein."
             />
           </Reveal>
 
-          <ul className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {subcategory.businessTypes.map((type, index) => (
-              <Reveal as="li" key={type.slug} delay={index * 40}>
+          <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {subcategory.businessTypes.map((businessType, index) => (
+              <Reveal as="li" key={businessType.slug} delay={index * 40}>
                 <BusinessTypeCard
-                  businessType={type}
+                  businessType={businessType}
                   to={businessTypePath(
                     industry.slug,
                     subcategory.slug,
-                    type.slug,
+                    businessType.slug,
                   )}
                 />
               </Reveal>
@@ -245,10 +253,11 @@ function IndustrySubcategoryPage({
         </Container>
       </section>
 
-      {/* What to get right */}
+      {/* Priorities */}
       <section
+        id="priorities"
         aria-labelledby="priorities-heading"
-        className="bg-white py-20 sm:py-24"
+        className="scroll-mt-24 bg-ink-50 py-16 sm:py-20 lg:py-24"
       >
         <Container>
           <div className="grid gap-10 lg:grid-cols-12 lg:gap-14">
@@ -256,111 +265,139 @@ function IndustrySubcategoryPage({
               <Reveal>
                 <SectionHeading
                   id="priorities-heading"
-                  eyebrow="Digital priorities"
-                  title={`What to get right online for ${subcategory.name.toLowerCase()}.`}
-                  description={subcategory.digitalFocus}
+                  eyebrow="Online priorities"
+                  title="Is group mein kya pehle theek karein?"
+                  description="Ye common priorities hain jo is group ke zyadatar businesses par lagti hain. Exact type ke page par aapko zyada specific order milega."
                 />
               </Reveal>
             </div>
 
             <div className="lg:col-span-7">
-              <Reveal delay={100}>
-                <ul className="space-y-3">
-                  {industry.considerations.map((consideration) => (
-                    <li
-                      key={consideration}
-                      className="flex items-start gap-3 rounded-xl border border-ink-100 bg-white p-4 text-[0.95rem] leading-relaxed text-ink-700"
-                    >
-                      <Check
-                        className="mt-0.5 size-4 shrink-0 text-brand-600"
-                        strokeWidth={2.5}
-                        aria-hidden="true"
-                      />
-                      {consideration}
-                    </li>
-                  ))}
-                </ul>
+              <Reveal delay={80}>
+                <PriorityList items={guide.priorities} />
               </Reveal>
             </div>
           </div>
         </Container>
       </section>
 
-      {/* How Bishora can help */}
+      {/* Mistakes + self-check */}
       <section
-        aria-labelledby="sub-help-heading"
-        className="bg-ink-50 py-20 sm:py-24"
+        aria-labelledby="mistakes-heading"
+        className="bg-white py-16 sm:py-20 lg:py-24"
+      >
+        <Container>
+          <div className="grid gap-10 lg:grid-cols-12 lg:gap-14">
+            <div className="lg:col-span-5">
+              <Reveal>
+                <SectionHeading
+                  id="mistakes-heading"
+                  eyebrow="Common mistakes"
+                  title="Ye galtiyan is group mein often hoti hain."
+                  description="Chhoti si inconsistency bhi customer ko rok deti hai. Neeche diye points apne business par honestly check karein."
+                />
+              </Reveal>
+
+              <Reveal delay={100}>
+                <div className="mt-6">
+                  <MistakeGrid items={guide.mistakes} />
+                </div>
+              </Reveal>
+            </div>
+
+            <div className="lg:col-span-7">
+              <Reveal delay={80}>
+                <div className="rounded-3xl border border-ink-100 bg-ink-50/70 p-6 shadow-soft sm:p-8">
+                  <p className="text-xs font-semibold tracking-[0.18em] text-brand-700 uppercase">
+                    Self-check
+                  </p>
+                  <h3 className="mt-3 font-display text-2xl font-bold text-ink-950">
+                    10 minute ka apna audit
+                  </h3>
+                  <p className="mt-2 text-[0.95rem] leading-relaxed text-ink-600">
+                    Kisi tool ki zaroorat nahi. Phone se apna business search
+                    karein aur ye cheezein check karein.
+                  </p>
+                  <Checklist items={guide.check} columns={1} className="mt-5" />
+                </div>
+              </Reveal>
+            </div>
+          </div>
+        </Container>
+      </section>
+
+      {/* Services */}
+      <section
+        aria-labelledby="services-heading"
+        className="bg-ink-50 py-16 sm:py-20 lg:py-24"
       >
         <Container>
           <Reveal>
             <SectionHeading
-              id="sub-help-heading"
-              eyebrow="How Bishora can help"
-              title={`Support for ${subcategory.name.toLowerCase()} businesses.`}
-              description="These existing services usually matter most for this group. We will only recommend what the business actually needs."
+              id="services-heading"
+              eyebrow="Agar help chahiye"
+              title="Is group ke liye kaunsi help practical hai?"
+              description="Ye services optional hain. Pehle apna self-check karein, phir decide karein ki kya khud karna hai aur kya outsource karna better hai."
             />
           </Reveal>
 
-          <div className="mt-12">
-            <RelevantServices
-              serviceSlugs={subcategory.serviceSlugs}
-              context="The scope, timeline and starting price for each service are set out on its own page and on the pricing page."
+          <div className="mt-10">
+            <ContextualServices
+              serviceSlugs={guide.services}
+              context="Hum sirf wahi service recommend karte hain jo aapke case mein actually kaam ki ho. Scope aur pricing har service page par clear hai."
             />
           </div>
         </Container>
       </section>
 
-      {/* Other groups */}
-      {siblings.length > 0 ? (
-        <section
-          aria-labelledby="siblings-heading"
-          className="bg-white py-16 sm:py-20"
-        >
-          <Container>
-            <Reveal>
-              <SectionHeading
-                id="siblings-heading"
-                eyebrow={industry.name}
-                title={`Other groups in ${industry.name}.`}
-                description="If your business sits closer to one of these groups, open it to see the exact types covered."
-              />
-            </Reveal>
+      {/* Related */}
+      <section
+        aria-labelledby="related-heading"
+        className="bg-white py-16 sm:py-20 lg:py-24"
+      >
+        <Container>
+          <RelatedLinks
+            id="related-heading"
+            eyebrow={industry.name}
+            title={`${industry.name} ke doosre groups.`}
+            description="Aapka business kisi doosre group se behtar match karta ho to wahan se shuru karein."
+            items={siblingGroups.map((item) => ({
+              name: item.name,
+              to: subcategoryPath(industry.slug, item.slug),
+              description: item.guide.tagline,
+              meta: `${item.businessTypes.length} business types`,
+            }))}
+            columns={2}
+          />
 
-            <ul className="mt-8 grid gap-3 sm:grid-cols-2">
-              {siblings.map((item) => (
-                <li key={item.slug}>
-                  <Link
-                    to={subcategoryPath(industry.slug, item.slug)}
-                    className="group flex items-center justify-between gap-4 rounded-xl border border-ink-100 bg-white p-4 shadow-soft transition-[transform,box-shadow,border-color] duration-300 hover:-translate-y-0.5 hover:border-brand-200 hover:shadow-lift"
-                  >
-                    <span>
-                      <span className="block font-display text-[1.0625rem] font-bold text-ink-950">
-                        {item.name}
-                      </span>
-                      <span className="mt-0.5 block text-xs text-ink-500">
-                        {item.businessTypes.length} business types
-                      </span>
-                    </span>
-                    <ArrowRight
-                      className="size-5 shrink-0 text-ink-300 transition-[color,transform] duration-200 group-hover:translate-x-0.5 group-hover:text-brand-600"
-                      aria-hidden="true"
-                    />
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </Container>
-        </section>
-      ) : null}
+          <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3 border-t border-ink-200/70 pt-6 text-sm">
+            <Link
+              to={industryPath(industry.slug)}
+              className="inline-flex items-center gap-1.5 font-semibold text-brand-700 transition-colors hover:text-brand-800"
+            >
+              All of {industry.name}
+              <ArrowRight className="size-3.5" aria-hidden="true" />
+            </Link>
+            <Link
+              to="/industries"
+              className="inline-flex items-center gap-1.5 font-semibold text-brand-700 transition-colors hover:text-brand-800"
+            >
+              Choose Your Business
+              <ArrowRight className="size-3.5" aria-hidden="true" />
+            </Link>
+          </div>
+        </Container>
+      </section>
 
       <IndustryNextSteps
-        title={`Next steps for your ${subcategory.name.toLowerCase()} business.`}
+        title={`${subcategory.name} ke liye next step.`}
+        description="Apne exact business type ka page khol kar specific priorities dekhein, ya humein apne business ke baare mein bataayein."
       />
 
       <CTASection
         eyebrow={industry.name}
-        title={`Tell us about your ${subcategory.name.toLowerCase()} business.`}
-        description="We will look at what you already have, identify the most useful next step and explain it plainly."
+        title={`${subcategory.name} business?`}
+        description="Aap exactly kya karte hain aur customers aap tak kaise pahunchte hain — bas ye batayein. Hum simple aur honest suggestion denge."
       />
     </>
   );

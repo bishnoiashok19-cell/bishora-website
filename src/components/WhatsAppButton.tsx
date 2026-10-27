@@ -100,7 +100,7 @@ export function WhatsAppButton() {
           href={whatsappLink()}
           target="_blank"
           rel="noopener noreferrer"
-          aria-label="Chat with Bishora on WhatsApp"
+          aria-label="Chat on WhatsApp with Bishora"
           className={cn(
             'group inline-flex h-14 items-center gap-2.5 rounded-full bg-[#25D366] px-4 text-ink-950',
             'shadow-lift transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#1eb457] sm:px-5',

@@ -2,11 +2,19 @@ import { slugify } from './types';
 import type {
   BusinessType,
   BusinessTypeContentSeed,
+  BusinessTypeGuide,
+  CategoryGuide,
   Industry,
   IndustrySeed,
   IndustrySubcategory,
+  SubcategoryGuide,
 } from './types';
 import { businessTypeContent } from './content';
+import { categoryGuides } from './guides/categories';
+import { groupGuides } from './guides/groups';
+import { businessTypeGuides } from './guides/types';
+import { imagesForScene } from './images';
+import { services } from '../services';
 import { industriesPartA } from './part-a';
 import { industriesPartB } from './part-b';
 import { industriesPartC } from './part-c';
@@ -27,6 +35,49 @@ const seeds: IndustrySeed[] = [
   ...industriesPartD,
   ...industriesPartE,
 ];
+
+const serviceSlugs = new Set(services.map((service) => service.slug));
+
+/** Fails the build if a guide recommends a service that does not exist. */
+function validateServices(where: string, slugs: string[]): void {
+  if (slugs.length < 2 || slugs.length > 4) {
+    throw new Error(`${where}: expected 2-4 services, received ${slugs.length}`);
+  }
+
+  for (const slug of slugs) {
+    if (!serviceSlugs.has(slug)) {
+      throw new Error(`${where}: unknown service slug "${slug}"`);
+    }
+  }
+
+  if (new Set(slugs).size !== slugs.length) {
+    throw new Error(`${where}: duplicate service slugs`);
+  }
+}
+
+const categoryGuideBySlug = new Map(
+  categoryGuides.map((guide) => [slugify(guide.name), guide]),
+);
+
+if (categoryGuides.length !== seeds.length) {
+  throw new Error(
+    `Category guide mismatch: ${categoryGuides.length} guides for ${seeds.length} categories.`,
+  );
+}
+
+const groupGuideByKey = new Map<string, (typeof groupGuides)[number]>();
+for (const guide of groupGuides) {
+  const key = `${guide.category}/${slugify(guide.name)}`;
+  if (groupGuideByKey.has(key)) throw new Error(`Duplicate group guide: ${key}`);
+  groupGuideByKey.set(key, guide);
+}
+
+const typeGuideByKey = new Map<string, (typeof businessTypeGuides)[number]>();
+for (const guide of businessTypeGuides) {
+  const key = `${guide.category}/${guide.group}/${slugify(guide.name)}`;
+  if (typeGuideByKey.has(key)) throw new Error(`Duplicate business-type guide: ${key}`);
+  typeGuideByKey.set(key, guide);
+}
 
 /**
  * Business-type copy is authored separately and keyed by
@@ -49,24 +100,69 @@ for (const group of businessTypeContent) {
 
 export const industries: Industry[] = seeds.map((seed) => {
   const industrySlug = slugify(seed.name);
+  const categoryGuide = categoryGuideBySlug.get(industrySlug);
+
+  if (!categoryGuide) {
+    throw new Error(`Missing category guide: ${industrySlug}`);
+  }
+
+  if (categoryGuide.intro.length < 2) {
+    throw new Error(`${industrySlug}: category guide needs two intro paragraphs`);
+  }
+
+  validateServices(`${industrySlug}: category`, categoryGuide.services);
 
   return {
     ...seed,
     slug: industrySlug,
+    guide: categoryGuide as CategoryGuide,
+    images: imagesForScene(categoryGuide.scene, 4, industrySlug),
     subcategories: seed.subcategories.map((subcategory) => {
       const subcategorySlug = slugify(subcategory.name);
+      const groupKey = `${industrySlug}/${subcategorySlug}`;
+      const groupGuide = groupGuideByKey.get(groupKey);
+
+      if (!groupGuide) {
+        throw new Error(`Missing group guide: ${groupKey}`);
+      }
+
+      validateServices(`${groupKey}: group`, groupGuide.services);
 
       return {
         ...subcategory,
         slug: subcategorySlug,
+        guide: groupGuide as SubcategoryGuide,
+        images: imagesForScene(groupGuide.scene, 3, groupKey),
         businessTypes: subcategory.businessTypes.map(
           (name): BusinessType => {
             const slug = slugify(name);
-            const key = `${industrySlug}/${subcategorySlug}/${slug}`;
+            const key = `${groupKey}/${slug}`;
             const content = contentByKey.get(key);
+            const typeGuide = typeGuideByKey.get(key);
 
             if (!content) {
               throw new Error(`Missing business-type content: ${key}`);
+            }
+
+            if (!typeGuide) {
+              throw new Error(`Missing business-type guide: ${key}`);
+            }
+
+            validateServices(`${key}: type`, typeGuide.services);
+            const { category, group, name: guideName, ...guide } = typeGuide;
+
+            if (guideName !== name) {
+              throw new Error(
+                `Business-type guide name mismatch: ${key} vs "${guideName}"`,
+              );
+            }
+
+            if (guide.priorities.length !== 4) {
+              throw new Error(`${key}: expected 4 ordered priorities`);
+            }
+
+            if (guide.does.length < 4 || guide.does.length > 6) {
+              throw new Error(`${key}: expected 4-6 activities`);
             }
 
             return {
@@ -78,6 +174,8 @@ export const industries: Industry[] = seeds.map((seed) => {
               does: content.does,
               online: content.online,
               serviceSlugs: content.services,
+              guide: guide as BusinessTypeGuide,
+              images: imagesForScene(guide.scene, 4, key),
             };
           },
         ),
@@ -99,6 +197,23 @@ const declaredBusinessTypes = industries.reduce(
 if (contentByKey.size !== declaredBusinessTypes) {
   throw new Error(
     `Business-type content mismatch: ${contentByKey.size} entries for ${declaredBusinessTypes} business types.`,
+  );
+}
+
+if (typeGuideByKey.size !== declaredBusinessTypes) {
+  throw new Error(
+    `Business-type guide mismatch: ${typeGuideByKey.size} entries for ${declaredBusinessTypes} business types.`,
+  );
+}
+
+const declaredGroups = industries.reduce(
+  (total, industry) => total + industry.subcategories.length,
+  0,
+);
+
+if (groupGuideByKey.size !== declaredGroups) {
+  throw new Error(
+    `Group guide mismatch: ${groupGuideByKey.size} entries for ${declaredGroups} groups.`,
   );
 }
 

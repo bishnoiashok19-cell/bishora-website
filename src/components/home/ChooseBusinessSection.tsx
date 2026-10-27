@@ -28,8 +28,8 @@ export function ChooseBusinessSection() {
           <SectionHeading
             id="choose-business-heading"
             eyebrow="Choose your business"
-            title="Tell us what kind of business you run."
-            description="Explore the category that matches your business and see the digital services that usually matter — from your website and local visibility to advertising and customer communication."
+            title="Aap kaunsa business chalate hain?"
+            description="Apni category chunein aur dekhein ki us business mein customer kaise dhoondhta hai, online kya sahi rakhna hai aur kaam kis order mein karna chahiye."
           />
         </Reveal>
 
@@ -56,7 +56,11 @@ export function ChooseBusinessSection() {
                     {industry.name}
                   </h3>
 
-                  <p className="mt-1.5 text-xs text-ink-500">
+                  <p className="mt-1.5 line-clamp-2 text-[0.8125rem] leading-relaxed text-ink-600">
+                    {industry.guide.tagline}
+                  </p>
+
+                  <p className="mt-2 text-xs text-ink-500">
                     {subcategoryCount(industry)} business groups
                   </p>
 

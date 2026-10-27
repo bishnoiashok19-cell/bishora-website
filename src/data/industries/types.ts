@@ -20,6 +20,46 @@ export function slugify(value: string): string {
     .replace(/^-+|-+$/g, '');
 }
 
+import type { ImageSceneId, IndustryImage } from './images';
+
+/** A numbered priority with the practical reason behind it. */
+export type GuidePriority = {
+  title: string;
+  why: string;
+};
+
+/** The customer-first, Hinglish guide attached to one business type page. */
+export type BusinessTypeGuide = {
+  /** Curated photo family for this exact kind of business. */
+  scene: ImageSceneId;
+  /** Short hero + card summary in natural Hinglish. */
+  tagline: string;
+  /** Four to six real activities this business handles. */
+  does: string[];
+  /** How customers actually discover this business online. */
+  find: string[];
+  /** What must stay accurate and useful online. */
+  must: string[];
+  /** What the business website should give a customer. */
+  site: string[];
+  /** Mistakes that cost enquiries for this business. */
+  mistakes: string[];
+  /** Ordered priorities, with the reason each one matters. */
+  priorities: GuidePriority[];
+  /** A simple self-audit the owner can run without help. */
+  check: string[];
+  /** Existing Bishora service slugs that genuinely fit. */
+  services: string[];
+};
+
+export type BusinessTypeGuideSeed = BusinessTypeGuide & {
+  /** Category slug, kept explicit so identical names in other categories stay unique. */
+  category: string;
+  /** Group slug. */
+  group: string;
+  name: string;
+};
+
 export type BusinessType = {
   /** Display name, exactly as supplied in the directory. */
   name: string;
@@ -36,6 +76,10 @@ export type BusinessType = {
   online: string[];
   /** Existing Bishora service slugs relevant to this exact business type. */
   serviceSlugs: string[];
+  /** Hinglish customer-first guide used by the page template. */
+  guide: BusinessTypeGuide;
+  /** Three or four curated photographs, hero first. */
+  images: IndustryImage[];
 };
 
 /** Per-business-type editorial content, stored outside the category files. */
@@ -58,6 +102,26 @@ export type BusinessTypeContentGroup = {
   types: BusinessTypeContentSeed[];
 };
 
+export type SubcategoryGuide = {
+  scene: ImageSceneId;
+  tagline: string;
+  /** Two short paragraphs explaining the group in practical language. */
+  intro: string[];
+  /** What these businesses actually do. */
+  does: string[];
+  /** What customers expect before they enquire. */
+  expect: string[];
+  priorities: GuidePriority[];
+  mistakes: string[];
+  check: string[];
+  services: string[];
+};
+
+export type SubcategoryGuideSeed = SubcategoryGuide & {
+  category: string;
+  name: string;
+};
+
 export type IndustrySubcategory = {
   name: string;
   slug: string;
@@ -68,6 +132,31 @@ export type IndustrySubcategory = {
   /** Existing Bishora service slugs that usually matter for this group. */
   serviceSlugs: string[];
   businessTypes: BusinessType[];
+  guide: SubcategoryGuide;
+  images: IndustryImage[];
+};
+
+export type CategoryGuide = {
+  scene: ImageSceneId;
+  tagline: string;
+  /** Two short overview paragraphs. */
+  intro: string[];
+  /** Checks that help an owner confirm they belong in this category. */
+  whoFor: string[];
+  /** What customers in this category generally want. */
+  expect: string[];
+  /** The typical online customer journey, in order. */
+  journey: GuidePriority[];
+  priorities: GuidePriority[];
+  mistakes: string[];
+  check: string[];
+  services: string[];
+  /** Genuinely related category slugs. */
+  related: string[];
+};
+
+export type CategoryGuideSeed = CategoryGuide & {
+  name: string;
 };
 
 export type Industry = {
@@ -87,6 +176,8 @@ export type Industry = {
   /** Slugs of genuinely related categories. */
   relatedSlugs: string[];
   subcategories: IndustrySubcategory[];
+  guide: CategoryGuide;
+  images: IndustryImage[];
 };
 
 /** The shape each data file exports. Slugs are derived in `index.ts`. */
