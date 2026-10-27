@@ -2,6 +2,7 @@ import { Hero } from '../components/home/Hero';
 import { ValueSection } from '../components/home/ValueSection';
 import { ServicesOverview } from '../components/home/ServicesOverview';
 import { VerticalsSection } from '../components/home/VerticalsSection';
+import { ChooseBusinessSection } from '../components/home/ChooseBusinessSection';
 import { WhySection } from '../components/home/WhySection';
 import { FaqSection } from '../components/home/FaqSection';
 import { ProcessSection } from '../components/ProcessSection';
@@ -35,6 +36,7 @@ export default function Home() {
       <ValueSection />
       <ServicesOverview />
       <VerticalsSection />
+      <ChooseBusinessSection />
       <WhySection />
       <ProcessSection />
       <FaqSection />

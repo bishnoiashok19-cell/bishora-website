@@ -10,6 +10,7 @@ import {
   hasWhatsapp,
 } from '../../config/site';
 import { Button } from '../ui/Button';
+import { IndustryMobileNav } from '../industries/IndustryMobileNav';
 import { Logo } from './Logo';
 import { cn } from '../../lib/utils';
 
@@ -115,20 +116,24 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
 
         <nav aria-label="Mobile" className="px-5 pb-2 sm:px-7">
           <ul className="divide-y divide-ink-100 border-y border-ink-100">
-            {navLinks.map((link) => (
-              <li key={link.to}>
-                <Link
-                  to={link.to}
-                  onClick={onClose}
-                  className="flex items-center justify-between gap-4 py-4 text-lg font-semibold text-ink-900 transition-colors hover:text-brand-700"
-                >
-                  {link.label}
-                  <span className="text-sm font-normal text-ink-400">
-                    {link.description}
-                  </span>
-                </Link>
-              </li>
-            ))}
+            {navLinks.map((link) =>
+              link.to === '/industries' ? (
+                <IndustryMobileNav key={link.to} onNavigate={onClose} />
+              ) : (
+                <li key={link.to}>
+                  <Link
+                    to={link.to}
+                    onClick={onClose}
+                    className="flex items-center justify-between gap-4 py-4 text-lg font-semibold text-ink-900 transition-colors hover:text-brand-700"
+                  >
+                    {link.label}
+                    <span className="text-sm font-normal text-ink-400">
+                      {link.description}
+                    </span>
+                  </Link>
+                </li>
+              ),
+            )}
           </ul>
         </nav>
 

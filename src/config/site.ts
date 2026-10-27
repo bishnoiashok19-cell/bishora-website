@@ -95,6 +95,11 @@ export const navLinks = [
   { label: 'Home', to: '/', description: 'What Bishora does and how we work' },
   { label: 'Services', to: '/services', description: 'SEO, ads, websites and social media' },
   { label: 'Pricing', to: '/pricing', description: 'Starting prices, packages and what is included' },
+  {
+    label: 'Choose Your Business',
+    to: '/industries',
+    description: 'Find your business category and the services that fit',
+  },
   { label: 'About', to: '/about', description: 'The agency behind Bishora' },
   { label: 'Portfolio', to: '/portfolio', description: 'Projects and case study work' },
   { label: 'Contact', to: '/contact', description: 'Start a conversation with us' },

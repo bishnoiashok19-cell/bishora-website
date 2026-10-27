@@ -5,6 +5,7 @@ import { navLinks, primaryCta } from '../../config/site';
 import { Button } from '../ui/Button';
 import { Container } from '../ui/Container';
 import { MobileMenu } from './MobileMenu';
+import { IndustryNavItem } from './IndustryNavItem';
 import { Logo } from './Logo';
 import { cn } from '../../lib/utils';
 
@@ -65,43 +66,50 @@ export function Navbar() {
             </Link>
 
             <nav aria-label="Primary" className="hidden lg:block">
-              <ul className="flex items-center gap-1">
-                {navLinks.map((link) => (
-                  <li key={link.to}>
-                    <NavLink
-                      to={link.to}
-                      end={link.to === '/'}
-                      className={({ isActive }) =>
-                        cn(
-                          'relative inline-flex items-center rounded-full px-4 py-2 text-[0.9375rem] font-medium transition-colors duration-200',
-                          transparent
-                            ? 'text-ink-100 hover:text-white'
-                            : 'text-ink-600 hover:text-ink-950',
-                          isActive &&
-                            (transparent
-                              ? 'text-white'
-                              : 'text-brand-700'),
-                        )
-                      }
-                    >
-                      {({ isActive }) => (
-                        <>
-                          {link.label}
-                          <span
-                            aria-hidden="true"
-                            className={cn(
-                              'pointer-events-none absolute inset-x-4 -bottom-0.5 h-0.5 rounded-full bg-brand-500 transition-all duration-300',
-                              isActive
-                                ? 'opacity-100'
-                                : 'scale-x-0 opacity-0',
-                              transparent ? 'bg-brand-300' : 'bg-brand-600',
-                            )}
-                          />
-                        </>
-                      )}
-                    </NavLink>
-                  </li>
-                ))}
+              <ul className="flex items-center gap-0.5 xl:gap-1">
+                {navLinks.map((link) =>
+                  link.to === '/industries' ? (
+                    <IndustryNavItem
+                      key={link.to}
+                      transparent={transparent}
+                    />
+                  ) : (
+                    <li key={link.to}>
+                      <NavLink
+                        to={link.to}
+                        end={link.to === '/'}
+                        className={({ isActive }) =>
+                          cn(
+                            'relative inline-flex items-center rounded-full px-2.5 py-2 text-[0.9375rem] font-medium transition-colors duration-200 xl:px-4',
+                            transparent
+                              ? 'text-ink-100 hover:text-white'
+                              : 'text-ink-600 hover:text-ink-950',
+                            isActive &&
+                              (transparent
+                                ? 'text-white'
+                                : 'text-brand-700'),
+                          )
+                        }
+                      >
+                        {({ isActive }) => (
+                          <>
+                            {link.label}
+                            <span
+                              aria-hidden="true"
+                              className={cn(
+                                'pointer-events-none absolute inset-x-2.5 -bottom-0.5 h-0.5 rounded-full bg-brand-500 transition-all duration-300 xl:inset-x-4',
+                                isActive
+                                  ? 'opacity-100'
+                                  : 'scale-x-0 opacity-0',
+                                transparent ? 'bg-brand-300' : 'bg-brand-600',
+                              )}
+                            />
+                          </>
+                        )}
+                      </NavLink>
+                    </li>
+                  ),
+                )}
               </ul>
             </nav>
 
