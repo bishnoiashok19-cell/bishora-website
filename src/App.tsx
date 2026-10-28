@@ -3,6 +3,7 @@ import { Route, Routes } from 'react-router-dom';
 import { Navbar } from './components/layout/Navbar';
 import { Footer } from './components/layout/Footer';
 import { ScrollToTop } from './components/layout/ScrollToTop';
+import { RouteAnalytics } from './components/layout/RouteAnalytics';
 import { WhatsAppButton } from './components/WhatsAppButton';
 import { genericServices, getServiceSubServices, servicePath, subServicePath } from './data/servicePages';
 import { seoSubServices } from './data/seoSubServices';
@@ -41,6 +42,7 @@ export default function App() {
   return (
     <>
       <ScrollToTop />
+      <RouteAnalytics />
       <Navbar />
 
       <main id="main-content">

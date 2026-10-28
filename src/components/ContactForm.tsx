@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { serviceNames } from '../data/services';
 import { hasEmail, hasWhatsapp, mailtoLink, whatsappLink } from '../config/site';
+import { trackEvent } from '../lib/analytics';
 import { Button } from './ui/Button';
 import { cn } from '../lib/utils';
 
@@ -132,6 +133,12 @@ export function ContactForm({ initialService = '' }: ContactFormProps) {
     }
 
     setSubmitted(true);
+    // Fires only once the enquiry has actually reached the success state.
+    // No name, email, phone or message text is ever sent to GA4.
+    trackEvent('contact_success', {
+      button_location: 'contact_form',
+      service_interest: values.service || 'not_specified',
+    });
     window.setTimeout(() => successRef.current?.focus(), 60);
   };
 
