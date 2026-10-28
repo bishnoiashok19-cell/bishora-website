@@ -1,5 +1,38 @@
 import { gaMeasurementId, isMeasurementIdValid } from '../config/analytics';
 
+/**
+ * ============================================================================
+ * BISHORA — GA4 EVENT TAXONOMY
+ * ============================================================================
+ * Every event below describes something the WEBSITE can actually observe.
+ * None of them claim that a message reached Bishora.
+ *
+ * NAVIGATION
+ *   page_view               one per route change (see RouteAnalytics).
+ *
+ * CONTACT INTENT — opening a channel, NOT a confirmed enquiry
+ *   whatsapp_click          visitor clicked a wa.me link. Opening WhatsApp is
+ *                           not proof that a message was sent.
+ *   email_click             visitor clicked a mailto: link. Opening a mail
+ *                           client is not proof that an email was sent.
+ *   phone_click             visitor clicked a tel: link. The dialer opening is
+ *                           not proof that a call was placed.
+ *   consultation_click      visitor clicked an in-page CTA that leads to the
+ *                           contact flow. Intent only.
+ *   contact_success         the contact form validated and the success screen
+ *                           ("your enquiry is ready") was shown. The visitor
+ *                           still sends the message from their own WhatsApp or
+ *                           email app, so this is a COMPLETED FORM — not a
+ *                           received enquiry.
+ *
+ * CONFIRMED INBOUND ENQUIRY — reserved, never fired by this build
+ *   enquiry_received        only after a server-side integration confirms an
+ *                           actual inbound message (WhatsApp Business webhook
+ *                           or email/backend intake). See
+ *                           ENQUIRY_RECEIVED_EVENT below.
+ * ============================================================================
+ */
+
 type AnalyticsParams = Record<string, string | number | boolean | undefined>;
 
 declare global {
@@ -22,10 +55,40 @@ const MAX_TEXT_LENGTH = 100;
 const CONTACT_PATH = '/contact';
 
 /**
- * Labels that identify a real consultation CTA. Plain navigation links such as
- * "Contact" are deliberately excluded so the event means business intent.
+ * Reserved name for a CONFIRMED inbound enquiry.
+ *
+ * Never call `trackEvent(ENQUIRY_RECEIVED_EVENT, ...)` from the browser. This
+ * page cannot know whether the visitor pressed Send in WhatsApp, whether an
+ * email left their outbox, or whether Bishora received anything at all.
+ *
+ * Planned flow once a receiving integration exists:
+ *
+ *   visitor → contact form → WhatsApp/Email app → Bishora inbox
+ *     → WhatsApp Business webhook (or email intake) confirms the message
+ *     → server reports `enquiry_received` (Measurement Protocol), or redirects
+ *       back with a signed token so this page may send it exactly once.
+ *
+ * Contract (keep these names stable once the integration ships):
+ *   channel: 'whatsapp' | 'email'
+ *   service_interest?: string
+ *   Never: name, phone number, email address, message body or WhatsApp content.
  */
-const CONSULTATION_CTA = /(consult|quote|enquir|talk to|contact us|call us|get started|start a project|get in touch|apne business|apna business)/i;
+export const ENQUIRY_RECEIVED_EVENT = 'enquiry_received' as const;
+
+export type EnquiryReceivedParams = {
+  channel: 'whatsapp' | 'email';
+  service_interest?: string;
+};
+
+/**
+ * CTA labels that indicate a real consultation intent. Plain navigation links
+ * such as "Contact" are deliberately excluded so the event keeps its meaning.
+ *
+ * These phrases are static copy from the components; if a CTA label changes,
+ * the phrase list must change with it. CTAs whose label is too generic for a
+ * text match opt in explicitly with `data-analytics-cta="consultation"`.
+ */
+const CONSULTATION_CTA = /(consult|quote|enquir|talk to|contact us|contact bishora|call us|get started|start a project|get in touch|ask about|ask your question|discuss this package|baat karein|apne business|apna business)/i;
 
 /**
  * Defence in depth: never let an email address or a phone-like number reach
@@ -162,6 +225,10 @@ function isConsultationLink(anchor: HTMLAnchorElement, href: string): boolean {
   if (url.origin !== window.location.origin) return false;
   if (url.pathname.replace(/\/+$/, '') !== CONTACT_PATH) return false;
 
+  // Explicit opt-in for CTAs whose label alone would be too generic, such as a
+  // button that only says "Contact". Deterministic and immune to copy changes.
+  if (anchor.closest('[data-analytics-cta="consultation"]')) return true;
+
   // Top-level navigation ("Contact" in the header/footer menus) is not a CTA.
   if (anchor.closest('nav')) return false;
 
@@ -172,6 +239,9 @@ function isConsultationLink(anchor: HTMLAnchorElement, href: string): boolean {
  * One delegated listener covers every WhatsApp, email, phone and consultation
  * link on the site — header, footer, pricing, industry pages and the contact
  * success screen — without touching their markup.
+ *
+ * These are INTENT events: they record that the visitor opened a contact
+ * channel. They are not evidence of a sent message or a received enquiry.
  */
 function handleDocumentClick(event: MouseEvent): void {
   if (!analyticsEnabled) return;

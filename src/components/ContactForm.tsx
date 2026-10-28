@@ -133,7 +133,11 @@ export function ContactForm({ initialService = '' }: ContactFormProps) {
     }
 
     setSubmitted(true);
-    // Fires only once the enquiry has actually reached the success state.
+    // `contact_success` = the form was completed and the success screen is
+    // shown. It is NOT proof that a message was sent or received: the visitor
+    // still presses Send inside WhatsApp or their email app afterwards.
+    // A confirmed inbound enquiry is the future `enquiry_received` event,
+    // which may only come from a server-side receiving integration.
     // No name, email, phone or message text is ever sent to GA4.
     trackEvent('contact_success', {
       button_location: 'contact_form',
@@ -155,6 +159,7 @@ export function ContactForm({ initialService = '' }: ContactFormProps) {
         tabIndex={-1}
         role="status"
         aria-live="polite"
+        data-analytics-location="contact_success"
         className="rounded-2xl border border-brand-100 bg-brand-50/60 p-7 focus:outline-none sm:p-9"
       >
         <span className="inline-flex size-12 items-center justify-center rounded-xl bg-brand-600 text-white">

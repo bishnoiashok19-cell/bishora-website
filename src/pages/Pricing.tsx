@@ -447,6 +447,7 @@ export default function Pricing() {
                 size="lg"
                 variant="outlineLight"
                 className="w-full sm:w-auto"
+                data-analytics-cta="consultation"
               >
                 Contact
               </Button>
