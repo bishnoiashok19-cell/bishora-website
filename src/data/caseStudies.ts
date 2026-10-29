@@ -7,7 +7,6 @@ import {
   LayoutGrid,
   MousePointerClick,
   Search,
-  Settings2,
   ShieldCheck,
   ShoppingCart,
   UserRound,
@@ -28,6 +27,7 @@ import type { LucideIcon } from 'lucide-react';
  *    measured numbers exist. The page renders nothing when they are missing.
  *  - Every visual points at a real screenshot of the live product UI. Only
  *    replace `image.src` when a screen changes; the layout stays identical.
+ *  - Internal admin screens are never published here.
  * ============================================================================
  */
 
@@ -60,13 +60,18 @@ export type CaseStudyCard = {
 
 export type CaseStudyStep = {
   title: string;
-  description: string;
   icon: LucideIcon;
 };
 
 export type CaseStudyMeta = {
   label: string;
   value: string;
+};
+
+export type CaseStudyStatusPoint = {
+  label: string;
+  /** Ready items show a check; pending items show a clock. */
+  done: boolean;
 };
 
 export type CaseStudyResult = {
@@ -78,7 +83,12 @@ export type CaseStudy = {
   slug: string;
   /** Short client name used in breadcrumbs and headings. */
   name: string;
+  /** Full project title used on the portfolio listing card. */
   title: string;
+  /** Small eyebrow above the case-study H1. */
+  heroEyebrow: string;
+  /** Case-study page H1. */
+  heroTitle: string;
   subtitle: string;
   status: CaseStudyStatus;
   /** Visible badge text. Keep it honest. */
@@ -86,16 +96,26 @@ export type CaseStudy = {
   heroDescription: string;
   /** One or two lines used on the portfolio listing card. */
   summary: string;
-  meta: CaseStudyMeta[];
+  /** Compact Client / Project / Service row under the hero. */
+  heroMeta: CaseStudyMeta[];
   about: string[];
+  /** Short facts shown beside the About copy. */
+  aboutFacts: CaseStudyMeta[];
   challenges: CaseStudyCard[];
   features: CaseStudyCard[];
   flow: CaseStudyStep[];
+  /** Short design-thinking block after the screens. */
+  discovery: {
+    title: string;
+    description: string;
+    points: CaseStudyCard[];
+  };
   heroVisual: CaseStudyVisual;
   visuals: CaseStudyVisual[];
   technology: string[];
   technologyNote: string[];
   statusNote: string[];
+  statusPoints: CaseStudyStatusPoint[];
   cta: {
     eyebrow: string;
     title: string;
@@ -121,35 +141,46 @@ export const caseStudies: CaseStudy[] = [
     slug: 'dalchand-digital-platform',
     name: 'Dalchand',
     title: 'DALCHAND — Digital Asset Platform',
+    heroEyebrow: 'Dalchand',
+    heroTitle: 'Digital Asset Platform',
     subtitle: 'Website Design & Development',
     status: 'in-development',
     statusLabel: 'IN DEVELOPMENT',
     heroDescription:
-      'Dalchand एक digital platform है जहाँ photographers, videographers और creators अपने creative work के लिए useful digital resources को एक जगह explore और access कर सकते हैं.',
+      'Dalchand एक digital platform है जहाँ photographers, videographers और creators अपने work के लिए useful digital resources को एक जगह explore और access कर सकते हैं।',
     summary:
       'Photographers, videographers और creators के लिए एक organised digital asset platform — product catalog, categories, cart और account system के साथ.',
-    meta: [
+    heroMeta: [
       { label: 'Client', value: 'Dalchand' },
-      { label: 'Work', value: 'Website design & development' },
-      { label: 'Platform', value: 'Digital asset platform' },
-      { label: 'Status', value: 'In development' },
+      { label: 'Project', value: 'Digital Asset Platform' },
+      { label: 'Service', value: 'Website Design & Development' },
     ],
     about: [
       'Dalchand के लिए सिर्फ एक normal product website नहीं बनानी थी.',
-      'Goal था एक ऐसा easy-to-use digital platform बनाना जहाँ अलग-अलग creative resources को categories में organize किया जा सके, हर product की proper details दिखाई जाएँ और आगे चलकर subscription-based access और secure downloads को manage किया जा सके.',
+      'Goal था एक easy-to-use digital platform बनाना जहाँ अलग-अलग creative resources को categories में organize किया जा सके, users products को आसानी से find और explore कर सकें और आगे चलकर subscription-based access और secure downloads को manage किया जा सके.',
+    ],
+    aboutFacts: [
+      { label: 'Platform', value: 'Digital asset marketplace' },
+      { label: 'Built for', value: 'Photographers, videographers & creators' },
+      { label: 'Access model', value: 'Subscription-based, secure downloads' },
     ],
     challenges: [
       {
-        title: 'बहुत सारे digital resources को properly organize करना',
+        title: 'Organize Digital Resources',
+        description:
+          'बहुत सारे digital resources को properly organize करना ताकि users आसानी से सही resource तक पहुँच सकें.',
         icon: FolderTree,
       },
       {
-        title: 'Users के लिए products को आसानी से find और explore करना',
+        title: 'Easy Product Discovery',
+        description:
+          'Products को categories और clear information के साथ इस तरह present करना कि users आसानी से find और explore कर सकें.',
         icon: Search,
       },
       {
-        title:
-          'Subscription, account और secure download के लिए strong foundation तैयार करना',
+        title: 'Subscription-Ready Foundation',
+        description:
+          'Account, subscription access और secure downloads के लिए strong technical foundation तैयार करना.',
         icon: ShieldCheck,
       },
     ],
@@ -157,67 +188,51 @@ export const caseStudies: CaseStudy[] = [
       {
         title: 'Product Catalog',
         description:
-          'Different digital products को एक proper catalog में organize किया गया.',
+          'Different digital products को एक organized catalog में present किया गया.',
         icon: LayoutGrid,
       },
       {
         title: '8 Product Categories',
         description:
-          'Products को अलग-अलग categories में रखा गया ताकि user आसानी से अपनी जरूरत की चीज ढूंढ सके.',
+          'Products को 8 clear categories में organize किया गया ताकि discovery आसान रहे.',
         icon: FolderTree,
       },
       {
         title: 'Product Details',
         description:
-          'हर product के लिए price, details, features, requirements और other important information दिखाई जाती है.',
+          'हर product के लिए pricing, details, features, requirements और related information का structured layout.',
         icon: FileText,
       },
       {
         title: 'Cart & Checkout',
         description:
-          'User products select करके cart और checkout flow तक जा सकता है.',
+          'Users के लिए product selection, cart और checkout flow तैयार किया गया.',
         icon: ShoppingCart,
       },
       {
         title: 'Customer Account',
         description:
-          'User के लिए account, orders, downloads और subscription related sections तैयार किए गए.',
+          'Account, orders, downloads और subscription-related sections के लिए dedicated customer experience.',
         icon: UserRound,
-      },
-      {
-        title: 'Admin Panel',
-        description:
-          'Products, categories, users, subscriptions और downloads को manage करने के लिए admin system बनाया गया.',
-        icon: Settings2,
       },
     ],
     flow: [
-      {
-        title: 'Browse',
-        description: 'Platform के products और categories explore करें.',
-        icon: Compass,
-      },
-      {
-        title: 'Select Product',
-        description: 'अपनी जरूरत का resource चुनें.',
-        icon: MousePointerClick,
-      },
-      {
-        title: 'Account',
-        description: 'Account बनाकर अपनी details manage करें.',
-        icon: UserRound,
-      },
-      {
-        title: 'Subscription / Access',
-        description: 'Subscription या access plan के through product access मिलता है.',
-        icon: KeyRound,
-      },
-      {
-        title: 'Download',
-        description: 'Access मिलने के बाद resource download करें.',
-        icon: Download,
-      },
+      { title: 'Browse', icon: Compass },
+      { title: 'Select Product', icon: MousePointerClick },
+      { title: 'Account', icon: UserRound },
+      { title: 'Subscription / Access', icon: KeyRound },
+      { title: 'Download', icon: Download },
     ],
+    discovery: {
+      title: 'Designed for Simple Discovery',
+      description:
+        'Platform का experience इस तरह रखा गया है कि user पहले resources explore करे, फिर category या product के through आगे बढ़े और बिना confusion के product information और access flow तक पहुँचे.',
+      points: [
+        { title: 'Easy Navigation', icon: Compass },
+        { title: 'Clear Categories', icon: LayoutGrid },
+        { title: 'Structured Product Information', icon: FileText },
+      ],
+    },
     heroVisual: {
       id: 'dalchand-home-hero',
       label: 'Homepage',
@@ -236,21 +251,31 @@ export const caseStudies: CaseStudy[] = [
         id: 'dalchand-home',
         label: 'Homepage',
         path: '/',
-        caption:
-          'Homepage का categories section, जहाँ से user एक ही जगह पर सभी 8 categories explore कर सकता है.',
+        caption: 'Clean starting point for exploring the platform.',
+        image: {
+          src: '/images/dalchand/dalchand-home.webp',
+          width: 2048,
+          height: 1280,
+          alt: 'Dalchand homepage with the main headline and a search field for digital resources.',
+        },
+      },
+      {
+        id: 'dalchand-categories',
+        label: 'Categories',
+        path: '/',
+        caption: 'Category-based discovery for digital resources.',
         image: {
           src: '/images/dalchand/dalchand-categories.webp',
           width: 1440,
           height: 900,
-          alt: 'Dalchand homepage category section showing eight product categories with covers and product counts.',
+          alt: 'Dalchand category section showing eight product categories with covers and product counts.',
         },
       },
       {
         id: 'dalchand-shop',
-        label: 'Shop & Categories',
+        label: 'Shop',
         path: '/shop',
-        caption:
-          'Categories और product listing के through user अपनी जरूरत के resources जल्दी find कर सकता है.',
+        caption: 'Product browsing with structured product cards.',
         image: {
           src: '/images/dalchand/dalchand-shop.webp',
           width: 1440,
@@ -260,28 +285,14 @@ export const caseStudies: CaseStudy[] = [
       },
       {
         id: 'dalchand-product',
-        label: 'Product Details',
+        label: 'Product Detail',
         path: '/product/wedding-photography-preset-pack',
-        caption:
-          'Product लेने से पहले user को उसकी important information एक ही जगह मिल जाती है.',
+        caption: 'Detailed product information and access flow.',
         image: {
           src: '/images/dalchand/dalchand-product.webp',
           width: 1440,
           height: 900,
           alt: 'Dalchand product detail page with product artwork, details panel and download action.',
-        },
-      },
-      {
-        id: 'dalchand-account',
-        label: 'Account Access',
-        path: '/login',
-        caption:
-          'Account sign-in screen — login के बाद user अपने orders, downloads और subscription details manage करता है.',
-        image: {
-          src: '/images/dalchand/dalchand-account.webp',
-          width: 1440,
-          height: 900,
-          alt: 'Dalchand sign-in screen for customer account access.',
         },
       },
     ],
@@ -292,13 +303,18 @@ export const caseStudies: CaseStudy[] = [
       'Razorpay Integration Architecture',
     ],
     technologyNote: [
-      'Modern frontend के साथ backend, database और future subscription/payment requirements को ध्यान में रखकर architecture तैयार किया गया.',
-      'Razorpay के लिए integration architecture तैयार है, लेकिन payment अभी fully live नहीं है.',
+      'Razorpay integration architecture is prepared for the planned subscription/payment flow.',
+      'Payment connection अभी live नहीं है.',
     ],
     statusNote: [
       'The platform is currently in development.',
-      'Website का core platform और major functionality तैयार है.',
-      'Final production deployment और payment connection इसके next steps हैं.',
+      'Website का core platform और major functionality तैयार है। Final production deployment और payment connection इसके next steps हैं.',
+    ],
+    statusPoints: [
+      { label: 'Core platform structure ready', done: true },
+      { label: 'Major user-facing functionality ready', done: true },
+      { label: 'Production payment connection pending', done: false },
+      { label: 'Final deployment pending', done: false },
     ],
     cta: {
       eyebrow: 'Your project next',
