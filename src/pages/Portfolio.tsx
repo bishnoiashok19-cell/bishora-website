@@ -1,12 +1,14 @@
-import { ArrowRight, Clock, FolderOpen, Lock } from 'lucide-react';
+import { ArrowRight, Clock, FolderOpen, Globe, Lock } from 'lucide-react';
 import { PageHero } from '../components/layout/PageHero';
 import { CTASection } from '../components/CTASection';
+import { CaseStudyScreenshot } from '../components/portfolio/CaseStudyScreenshot';
 import { Button } from '../components/ui/Button';
 import { Container } from '../components/ui/Container';
 import { IconTile } from '../components/ui/IconTile';
 import { ProjectThumbnail } from '../components/ProjectThumbnail';
 import { Reveal } from '../components/ui/Reveal';
 import { SectionHeading } from '../components/ui/SectionHeading';
+import { caseStudyPath, featuredCaseStudy } from '../data/caseStudies';
 import { caseStudyStructure, projectCategories } from '../data/projects';
 import { useSeo, buildBreadcrumbJsonLd } from '../lib/seo';
 
@@ -52,6 +54,75 @@ export default function Portfolio() {
           Start a project with us
         </Button>
       </PageHero>
+
+      {/* Published case study */}
+      {featuredCaseStudy ? (
+        <section
+          aria-labelledby="published-case-study-heading"
+          className="border-b border-ink-100 bg-ink-50 py-16 sm:py-20"
+        >
+          <Container>
+            <Reveal>
+              <SectionHeading
+                id="published-case-study-heading"
+                eyebrow="Published case study"
+                title="A platform we are building right now."
+                description="Our first published study documents work in progress. The build is real and the status is stated plainly — no results are claimed before they can be measured."
+              />
+            </Reveal>
+
+            <Reveal delay={80}>
+              <article className="mt-10 grid overflow-hidden rounded-3xl border border-ink-100 bg-white shadow-soft lg:grid-cols-2">
+                <div className="bg-ink-950 p-5 sm:p-7">
+                  <CaseStudyScreenshot
+                    visual={featuredCaseStudy.heroVisual}
+                    showCaption={false}
+                  />
+                </div>
+
+                <div className="flex flex-col justify-center p-6 sm:p-8 lg:p-10">
+                  <div className="flex flex-wrap items-center gap-2.5">
+                    <span className="inline-flex items-center gap-2 rounded-full bg-ink-950 px-3 py-1.5 text-xs font-semibold text-white">
+                      <Globe className="size-3.5" aria-hidden="true" />
+                      Website
+                    </span>
+                    <span className="inline-flex items-center gap-2 rounded-full bg-accent-100 px-3 py-1.5 text-[0.7rem] font-semibold tracking-[0.12em] text-accent-700 uppercase ring-1 ring-accent-200">
+                      <span
+                        aria-hidden="true"
+                        className="size-1.5 rounded-full bg-accent-500"
+                      />
+                      {featuredCaseStudy.statusLabel}
+                    </span>
+                  </div>
+
+                  <h3 className="mt-5 font-display text-2xl leading-tight font-bold text-ink-950">
+                    {featuredCaseStudy.title}
+                  </h3>
+
+                  <p className="mt-2 text-[0.8rem] font-semibold tracking-[0.14em] text-brand-700 uppercase">
+                    {featuredCaseStudy.subtitle}
+                  </p>
+
+                  <p className="mt-4 text-[0.95rem] leading-relaxed text-ink-600">
+                    {featuredCaseStudy.summary}
+                  </p>
+
+                  <div className="mt-7">
+                    <Button
+                      to={caseStudyPath(featuredCaseStudy.slug)}
+                      iconRight={
+                        <ArrowRight className="size-4" aria-hidden="true" />
+                      }
+                    >
+                      View case study
+                    </Button>
+                  </div>
+                </div>
+              </article>
+            </Reveal>
+          </Container>
+        </section>
+      ) : null}
 
       {/* Project categories */}
       <section
@@ -200,7 +271,7 @@ export default function Portfolio() {
                     id="transparency-heading"
                     className="font-display text-xl font-bold text-ink-950"
                   >
-                    Why the project details are not published yet
+                    Why results are not published yet
                   </h2>
                   <div className="mt-4 space-y-4 text-[0.95rem] leading-relaxed text-ink-600">
                     <p>
@@ -210,10 +281,12 @@ export default function Portfolio() {
                       from assumptions, and no numbers are ever estimated.
                     </p>
                     <p>
-                      In the meantime, this page is deliberately honest about
-                      what is and is not available. The card structure is built
-                      so real projects can be added without changing the
-                      layout.
+                      Dalchand is published above as a work-in-progress case
+                      study: it documents what has been built, not a finished
+                      outcome. The four category cards below stay as
+                      placeholders until each project is live, measurable and
+                      approved. Numbers, payment status and any client quote are
+                      added only when they are real.
                     </p>
                   </div>
                 </div>

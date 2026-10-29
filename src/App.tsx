@@ -18,6 +18,7 @@ const ServicePage = lazy(() => import('./pages/ServicePage'));
 const ServiceSubServicePage = lazy(() => import('./pages/ServiceSubServicePage'));
 const About = lazy(() => import('./pages/About'));
 const Portfolio = lazy(() => import('./pages/Portfolio'));
+const CaseStudy = lazy(() => import('./pages/CaseStudy'));
 const Contact = lazy(() => import('./pages/Contact'));
 const Industries = lazy(() => import('./pages/Industries'));
 const IndustryCategory = lazy(() => import('./pages/IndustryCategory'));
@@ -81,6 +82,7 @@ export default function App() {
             ))}
             <Route path="/about" element={<About />} />
             <Route path="/portfolio" element={<Portfolio />} />
+            <Route path="/portfolio/:slug" element={<CaseStudy />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/industries" element={<Industries />} />
             <Route
