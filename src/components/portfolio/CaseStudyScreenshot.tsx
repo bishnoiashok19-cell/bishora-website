@@ -9,6 +9,10 @@ export type CaseStudyScreenshotProps = {
   /** Hide the caption when the surrounding section already explains the shot. */
   showCaption?: boolean;
   className?: string;
+  /** Aspect ratio of the screen area. Compact ratios crop instead of stretching. */
+  aspectClassName?: string;
+  /** Object position used when a compact ratio crops the screenshot. */
+  imagePositionClassName?: string;
 };
 
 /**
@@ -22,6 +26,8 @@ export function CaseStudyScreenshot({
   priority = false,
   showCaption = true,
   className,
+  aspectClassName = 'aspect-[16/10]',
+  imagePositionClassName = 'object-center',
 }: CaseStudyScreenshotProps) {
   return (
     <figure className={cn('m-0', className)}>
@@ -49,7 +55,7 @@ export function CaseStudyScreenshot({
         </div>
 
         {/* Screen */}
-        <div className="relative aspect-[16/10] overflow-hidden bg-ink-950">
+        <div className={cn('relative overflow-hidden bg-ink-950', aspectClassName)}>
           <img
             src={visual.image.src}
             srcSet={visual.image.srcSet}
@@ -60,7 +66,7 @@ export function CaseStudyScreenshot({
             loading={priority ? 'eager' : 'lazy'}
             decoding={priority ? 'sync' : 'async'}
             fetchPriority={priority ? 'high' : 'auto'}
-            className="size-full object-cover"
+            className={cn('size-full object-cover', imagePositionClassName)}
           />
         </div>
       </div>

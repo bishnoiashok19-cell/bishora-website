@@ -82,10 +82,10 @@ function CaseStudyPage({ study }: { study: CaseStudy }) {
         </dl>
       </PageHero>
 
-      {/* Hero visual — supporting evidence, deliberately not full width. */}
+      {/* Hero visual — a compact preview, not the whole website. */}
       <section
         aria-label="Platform preview"
-        className="relative overflow-hidden bg-ink-950 pb-14 sm:pb-16 lg:pb-20"
+        className="relative overflow-hidden bg-ink-950 pb-12 sm:pb-14"
       >
         <div
           aria-hidden="true"
@@ -93,19 +93,20 @@ function CaseStudyPage({ study }: { study: CaseStudy }) {
         />
 
         <Container className="relative">
-          {/* Sized as supporting evidence: ~72% desktop, ~88% tablet, full width on mobile. */}
-          <Reveal className="mx-auto w-full sm:max-w-[88%] xl:max-w-[72%]">
+          <Reveal className="mx-auto w-full max-w-[52rem]">
             <CaseStudyScreenshot
               visual={study.heroVisual}
               priority
               showCaption={false}
+              aspectClassName="aspect-[16/10] sm:aspect-[5/2]"
+              imagePositionClassName="object-top"
             />
           </Reveal>
         </Container>
       </section>
 
       {/* About */}
-      <section aria-labelledby="about-heading" className="bg-white py-16 sm:py-20">
+      <section aria-labelledby="about-heading" className="bg-white py-14 sm:py-16">
         <Container>
           <div className="grid gap-10 lg:grid-cols-12 lg:gap-14">
             <div className="lg:col-span-7">
@@ -147,7 +148,7 @@ function CaseStudyPage({ study }: { study: CaseStudy }) {
       {/* Challenge */}
       <section
         aria-labelledby="challenge-heading"
-        className="border-y border-ink-100 bg-ink-50 py-16 sm:py-20"
+        className="border-y border-ink-100 bg-ink-50 py-14 sm:py-16"
       >
         <Container>
           <Reveal>
@@ -159,7 +160,7 @@ function CaseStudyPage({ study }: { study: CaseStudy }) {
             />
           </Reveal>
 
-          <ul className="mt-10 grid gap-4 sm:grid-cols-3">
+          <ul className="mt-9 grid gap-4 sm:grid-cols-3">
             {study.challenges.map((challenge, index) => {
               const Icon = challenge.icon;
 
@@ -193,7 +194,7 @@ function CaseStudyPage({ study }: { study: CaseStudy }) {
       </section>
 
       {/* What we built */}
-      <section aria-labelledby="built-heading" className="bg-white py-16 sm:py-20">
+      <section aria-labelledby="built-heading" className="bg-white py-14 sm:py-16">
         <Container>
           <Reveal>
             <SectionHeading
@@ -203,7 +204,7 @@ function CaseStudyPage({ study }: { study: CaseStudy }) {
             />
           </Reveal>
 
-          <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-6">
+          <ul className="mt-9 grid gap-4 sm:grid-cols-2 lg:grid-cols-6">
             {study.features.map((feature, index) => {
               const Icon = feature.icon;
               // 3 cards on the first row, 2 wider cards on the second.
@@ -243,10 +244,71 @@ function CaseStudyPage({ study }: { study: CaseStudy }) {
         </Container>
       </section>
 
+      {/* How we build */}
+      <section
+        aria-labelledby="process-heading"
+        className="border-y border-ink-100 bg-ink-50 py-14 sm:py-16"
+      >
+        <Container>
+          <div className="grid gap-5 lg:grid-cols-12 lg:items-end lg:gap-14">
+            <div className="lg:col-span-4">
+              <Reveal>
+                <SectionHeading
+                  id="process-heading"
+                  eyebrow="Plan → Design → Build → Test"
+                  title="How We Build"
+                />
+              </Reveal>
+            </div>
+
+            <div className="lg:col-span-8">
+              <Reveal delay={60}>
+                <p className="max-w-2xl text-[0.95rem] leading-[1.75] text-ink-600">
+                  {study.process.note}
+                </p>
+              </Reveal>
+            </div>
+          </div>
+
+          <ol className="mt-9 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {study.process.steps.map((step, index) => {
+              const Icon = step.icon;
+
+              return (
+                <Reveal as="li" key={step.title} delay={index * 60}>
+                  <div className="flex h-full flex-col rounded-2xl border border-ink-100 bg-white p-5 shadow-soft">
+                    <div className="flex items-center justify-between gap-3">
+                      <IconTile tone="brand" size="sm">
+                        <Icon aria-hidden="true" />
+                      </IconTile>
+                      <span className="text-[0.7rem] font-semibold tracking-[0.18em] text-ink-400">
+                        {String(index + 1).padStart(2, '0')}
+                      </span>
+                    </div>
+
+                    <h3 className="mt-4 font-display text-[1rem] leading-snug font-bold text-ink-950">
+                      {step.title}
+                    </h3>
+
+                    <p className="mt-2 text-sm leading-relaxed text-ink-600">
+                      {step.description}
+                    </p>
+
+                    <p className="mt-3 border-t border-ink-100 pt-3 text-[0.78rem] leading-relaxed text-ink-500">
+                      {step.note}
+                    </p>
+                  </div>
+                </Reveal>
+              );
+            })}
+          </ol>
+        </Container>
+      </section>
+
       {/* How it works */}
       <section
         aria-labelledby="flow-heading"
-        className="relative overflow-hidden border-y border-white/5 bg-ink-950 py-16 sm:py-20"
+        className="relative overflow-hidden border-b border-white/5 bg-ink-950 py-14 sm:py-16"
       >
         <div
           aria-hidden="true"
@@ -268,7 +330,7 @@ function CaseStudyPage({ study }: { study: CaseStudy }) {
             />
           </Reveal>
 
-          <ol className="relative mx-auto mt-12 max-w-xl space-y-6 lg:grid lg:max-w-none lg:grid-cols-5 lg:gap-4 lg:space-y-0">
+          <ol className="relative mx-auto mt-10 max-w-xl space-y-5 lg:grid lg:max-w-none lg:grid-cols-5 lg:gap-4 lg:space-y-0">
             <span
               aria-hidden="true"
               className="absolute top-4 bottom-4 left-7 w-px bg-white/25 lg:hidden"
@@ -293,28 +355,31 @@ function CaseStudyPage({ study }: { study: CaseStudy }) {
                     <Icon className="size-6" />
                   </span>
 
-                  <div className="lg:mt-5">
+                  <div className="min-w-0 lg:mt-5">
                     <span className="text-[0.6rem] font-semibold tracking-[0.18em] text-ink-500 uppercase">
                       Step {String(index + 1).padStart(2, '0')}
                     </span>
                     <h3 className="mt-1 font-display text-[0.95rem] leading-snug font-bold text-white">
                       {step.title}
                     </h3>
+                    <p className="mt-1.5 text-[0.8rem] leading-relaxed text-ink-300">
+                      {step.description}
+                    </p>
                   </div>
                 </li>
               );
             })}
           </ol>
 
-          <p className="mx-auto mt-10 max-w-2xl text-center text-[0.8rem] leading-relaxed text-ink-400">
-            Subscription और payment connection अभी pending हैं — platform in
-            development है.
+          <p className="mx-auto mt-8 max-w-2xl text-center text-[0.78rem] leading-relaxed text-ink-400">
+            यह platform का intended flow है — subscription और payment connection
+            अभी pending हैं।
           </p>
         </Container>
       </section>
 
       {/* Inside the website */}
-      <section aria-labelledby="inside-heading" className="bg-white py-16 sm:py-20">
+      <section aria-labelledby="inside-heading" className="bg-white py-14 sm:py-16">
         <Container>
           <Reveal>
             <SectionHeading
@@ -325,7 +390,7 @@ function CaseStudyPage({ study }: { study: CaseStudy }) {
             />
           </Reveal>
 
-          <div className="mx-auto mt-10 grid max-w-5xl grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-7">
+          <div className="mx-auto mt-9 grid max-w-4xl grid-cols-1 gap-6 sm:grid-cols-2 sm:gap-6">
             {study.visuals.map((visual, index) => (
               <Reveal key={visual.id} delay={Math.min(index, 3) * 60}>
                 <CaseStudyScreenshot visual={visual} />
@@ -335,57 +400,13 @@ function CaseStudyPage({ study }: { study: CaseStudy }) {
         </Container>
       </section>
 
-      {/* Design approach */}
+      {/* Technology */}
       <section
-        aria-labelledby="discovery-heading"
-        className="border-y border-ink-100 bg-ink-50 py-16 sm:py-20"
+        aria-labelledby="tech-heading"
+        className="border-y border-ink-100 bg-ink-50 py-14 sm:py-16"
       >
         <Container>
-          <div className="grid gap-8 lg:grid-cols-12 lg:gap-14">
-            <div className="lg:col-span-5">
-              <Reveal>
-                <SectionHeading
-                  id="discovery-heading"
-                  eyebrow="Design approach"
-                  title={study.discovery.title}
-                />
-              </Reveal>
-            </div>
-
-            <div className="lg:col-span-7">
-              <Reveal delay={80}>
-                <p className="max-w-2xl text-[0.98rem] leading-[1.75] text-ink-600">
-                  {study.discovery.description}
-                </p>
-
-                <ul className="mt-6 grid gap-3 sm:grid-cols-3">
-                  {study.discovery.points.map((point) => {
-                    const Icon = point.icon;
-
-                    return (
-                      <li
-                        key={point.title}
-                        className="flex items-center gap-2.5 rounded-xl border border-ink-100 bg-white px-3.5 py-3 text-[0.85rem] font-semibold text-ink-900 shadow-soft"
-                      >
-                        <Icon
-                          className="size-4 shrink-0 text-brand-600"
-                          aria-hidden="true"
-                        />
-                        <span>{point.title}</span>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </Reveal>
-            </div>
-          </div>
-        </Container>
-      </section>
-
-      {/* Technology */}
-      <section aria-labelledby="tech-heading" className="bg-white py-16 sm:py-20">
-        <Container>
-          <div className="grid gap-8 lg:grid-cols-12 lg:gap-14">
+          <div className="grid gap-6 lg:grid-cols-12 lg:gap-14">
             <div className="lg:col-span-4">
               <Reveal>
                 <SectionHeading id="tech-heading" title="Technology" />
@@ -409,7 +430,7 @@ function CaseStudyPage({ study }: { study: CaseStudy }) {
                   ))}
                 </ul>
 
-                <div className="mt-5 max-w-2xl space-y-2 text-[0.9rem] leading-relaxed text-ink-600">
+                <div className="mt-4 max-w-2xl space-y-2 text-[0.9rem] leading-relaxed text-ink-600">
                   {study.technologyNote.map((line) => (
                     <p key={line}>{line}</p>
                   ))}
@@ -421,12 +442,9 @@ function CaseStudyPage({ study }: { study: CaseStudy }) {
       </section>
 
       {/* Current status */}
-      <section
-        aria-labelledby="status-heading"
-        className="border-y border-ink-100 bg-ink-50 py-16 sm:py-20"
-      >
+      <section aria-labelledby="status-heading" className="bg-white py-14 sm:py-16">
         <Container>
-          <div className="grid gap-8 lg:grid-cols-12 lg:gap-14">
+          <div className="grid gap-6 lg:grid-cols-12 lg:gap-14">
             <div className="lg:col-span-4">
               <Reveal>
                 <SectionHeading id="status-heading" title="Current Status" />
@@ -435,16 +453,16 @@ function CaseStudyPage({ study }: { study: CaseStudy }) {
 
             <div className="lg:col-span-8">
               <Reveal delay={80}>
-                <div className="rounded-2xl border border-accent-200 bg-white p-6 shadow-soft sm:p-8">
+                <div className="rounded-2xl border border-accent-200 bg-ink-50/50 p-6 shadow-soft sm:p-7">
                   <StatusBadge label={study.statusLabel} tone="light" />
 
-                  <div className="mt-5 space-y-2 text-[0.95rem] leading-relaxed text-ink-700">
+                  <div className="mt-4 space-y-2 text-[0.95rem] leading-relaxed text-ink-700">
                     {study.statusNote.map((line) => (
                       <p key={line}>{line}</p>
                     ))}
                   </div>
 
-                  <ul className="mt-6 grid gap-2.5 sm:grid-cols-2">
+                  <ul className="mt-5 grid gap-2.5 sm:grid-cols-2">
                     {study.statusPoints.map((point) => (
                       <li
                         key={point.label}
@@ -470,6 +488,10 @@ function CaseStudyPage({ study }: { study: CaseStudy }) {
                       </li>
                     ))}
                   </ul>
+
+                  <p className="mt-4 text-[0.78rem] leading-relaxed text-ink-500">
+                    {study.statusFootnote}
+                  </p>
                 </div>
               </Reveal>
             </div>
@@ -481,7 +503,7 @@ function CaseStudyPage({ study }: { study: CaseStudy }) {
       {study.results?.length ? (
         <section
           aria-labelledby="results-heading"
-          className="border-b border-ink-100 bg-white py-16 sm:py-20"
+          className="border-t border-ink-100 bg-white py-14 sm:py-16"
         >
           <Container>
             <SectionHeading
@@ -490,7 +512,7 @@ function CaseStudyPage({ study }: { study: CaseStudy }) {
               title="Results"
               align="center"
             />
-            <dl className="mx-auto mt-10 grid max-w-3xl gap-4 sm:grid-cols-3">
+            <dl className="mx-auto mt-9 grid max-w-3xl gap-4 sm:grid-cols-3">
               {study.results.map((result) => (
                 <div
                   key={result.label}
@@ -511,7 +533,7 @@ function CaseStudyPage({ study }: { study: CaseStudy }) {
 
       {/* Testimonial — only rendered when an approved quote is supplied. */}
       {study.testimonial ? (
-        <section aria-labelledby="testimonial-heading" className="bg-white py-16 sm:py-20">
+        <section aria-labelledby="testimonial-heading" className="bg-white py-14 sm:py-16">
           <Container>
             <SectionHeading
               id="testimonial-heading"
@@ -542,7 +564,7 @@ function CaseStudyPage({ study }: { study: CaseStudy }) {
       />
 
       {/* Back to the listing, so the trail is never a dead end. */}
-      <section className="bg-white py-10">
+      <section className="bg-white py-8">
         <Container>
           <Button
             to="/portfolio"
